@@ -13,13 +13,14 @@ Tasks:
 - Compute ||Q^T * Q - I||_2 (can be done serially, is not timed. Just for error calc)
 
 Testing:
+- Run on 1, 2, 4, 8, 16 compute nodes
 - For sparse Matrices
 - For dense Matrices
 - Real data 
 - Synthetic data
 - Various matrix dimensions
 - Well-conditioned and ill-conditioned matrices
-
+- if time allows, gpu block size
 
 PAPERS:
 
