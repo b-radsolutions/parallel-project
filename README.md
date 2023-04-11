@@ -50,3 +50,7 @@ https://www.ijcaonline.org/volume5/number7/pxc3871079.pdf
 
 Analysis of Different Partition Schemes for parallel Gram-Schmidt Algorithms (NOTE: Acknowledge column parsing is faster when p>10)
 http://homepage.cs.uiowa.edu/~oliveira/PAPERS/mgs-journal.pdf
+
+Efficient implementations of the modified Gram-Schmidt orthogonalization with a non-standard inner product
+
+https://arxiv.org/pdf/1703.10440.pdf
