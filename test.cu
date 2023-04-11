@@ -8,18 +8,18 @@
 #define GRID_SIZE 16
 #define FEPSILON 0.0001
 
-__global__ void vector_subtraction(int n, float *x, float *y);
-__global__ void vector_dot_product(int n, float *x, float *y, float *result);
+__global__ void vector_subtraction(int n, double *x, double *y);
+__global__ void vector_dot_product(int n, double *x, double *y, double *result);
 
 const size_t arrSize = N * sizeof(double);
 
-float *arrayA;     // 1, 2, 3, ... n-1, n
-float *arrayB;     // 1, 2, 3, ... n-1, n
-float *arrayC;     // n, n-1, ... 3, 2, 1
-float *arrayEmpty; // 0, 0, 0, ... 0
-float *arrayOne;   // 1, 1, 1, ... 1
-float *device_result;
-float *result;
+double *arrayA;     // 1, 2, 3, ... n-1, n
+double *arrayB;     // 1, 2, 3, ... n-1, n
+double *arrayC;     // n, n-1, ... 3, 2, 1
+double *arrayEmpty; // 0, 0, 0, ... 0
+double *arrayOne;   // 1, 1, 1, ... 1
+double *device_result;
+double *result;
 
 void createTestStructures() {
     cudaMalloc(&arrayA, arrSize);
@@ -28,17 +28,17 @@ void createTestStructures() {
     cudaMalloc(&arrayEmpty, arrSize);
     cudaMalloc(&arrayOne, arrSize);
     cudaMalloc(&device_result, sizeof(double));
-    result = (float *)malloc(sizeof(double));
+    result = (double *)malloc(sizeof(double));
 
-    float *tmp = (float *)malloc(arrSize);
+    double *tmp = (double *)malloc(arrSize);
     for (size_t i = 0; i < N; i++) {
-        tmp[i] = (float)(i + 1);
+        tmp[i] = (double)(i + 1);
     }
     cudaMemcpy(arrayA, tmp, arrSize, cudaMemcpyHostToDevice);
     cudaMemcpy(arrayB, tmp, arrSize, cudaMemcpyHostToDevice);
 
     for (size_t i = 0; i < N; i++) {
-        tmp[i] = (float)(N - i);
+        tmp[i] = (double)(N - i);
     }
     cudaMemcpy(arrayC, tmp, arrSize, cudaMemcpyHostToDevice);
 
@@ -66,7 +66,7 @@ void cleanTestStructures() {
 }
 
 void testDotProduct() {
-    float expected;
+    double expected;
 
     // Dot product of any array with the zero vector is zeroes.
     expected = 0;
@@ -105,8 +105,8 @@ void testDotProduct() {
 
 void testSubtraction() {
 
-    float *arr_result = (float *)malloc(arrSize);
-    float  expected;
+    double *arr_result = (double *)malloc(arrSize);
+    double  expected;
 
     // An array minus the zero vector should be the original array
     vector_subtraction<<<1, N>>>(N, arrayA, arrayEmpty);

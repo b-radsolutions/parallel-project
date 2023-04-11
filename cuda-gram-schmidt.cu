@@ -17,7 +17,7 @@
  * @MODIFIES *x
  * @EFFECTS *x[i] is the difference x[i] - y[i]
  */
-__global__ void vector_subtraction(int n, float *x, float *y) {
+__global__ void vector_subtraction(int n, double *x, double *y) {
     int index = calc1dIndex;
     int stride = blockDim.x * gridDim.x;
     for (int i = index; i < n; i += stride)
@@ -33,7 +33,7 @@ __global__ void vector_subtraction(int n, float *x, float *y) {
  * @MODIFIES *x
  * @EFFECTS *x[i] is now x[i] / y
  */
-__global__ void vector_normalize(int n, float *x, float *y) {
+__global__ void vector_normalize(int n, double *x, double *y) {
     double denom = sqrrt(*y);
     int    index = calc1dIndex;
     int    stride = blockDim.x * gridDim.x;
@@ -50,7 +50,7 @@ __global__ void vector_normalize(int n, float *x, float *y) {
  * @MODIFIES *x
  * @EFFECTS *x[i] is now x[i] * y
  */
-__global__ void vector_mult(int n, float *x, float *y) {
+__global__ void vector_mult(int n, double *x, double *y) {
     int index = calc1dIndex;
     int stride = blockDim.x * gridDim.x;
     for (int i = index; i < n; i += stride)
@@ -62,12 +62,12 @@ __global__ void vector_mult(int n, float *x, float *y) {
  * @PARM n size of both vectors
  * @PARM *x vector
  * @PARM *y vector
- * @PARM *result a pointer to a single float value in which the result will be stored.
+ * @PARM *result a pointer to a single double value in which the result will be stored.
  * @REQUIRES *x and *y be equal in size
  * @REQUIRES *x and *y be a pointer in device memory
  */
-__global__ void vector_dot_product(int n, float *x, float *y, float *result) {
-    extern __shared__ float temp[];
+__global__ void vector_dot_product(int n, double *x, double *y, double *result) {
+    extern __shared__ double temp[];
 
     int index = calc1dIndex;
     temp[index] = x[index] * y[index];
@@ -86,7 +86,7 @@ __global__ void vector_dot_product(int n, float *x, float *y, float *result) {
 // Cuda Entry Points
 // ----------------------------------------
 
-float *magnitude;
+double *magnitude;
 
 void cudaSetup() {
     // Set up memory to hold the result of dot product
