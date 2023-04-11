@@ -47,3 +47,6 @@ https://www.hindawi.com/journals/mpe/2010/268093/
 A Parallel implementation of Gram-Schmidt Algorithm for
 Dense Linear System of Equations (NOTE:Take a look at their diagrams and their graphs)
 https://www.ijcaonline.org/volume5/number7/pxc3871079.pdf
+
+Analysis of Different Partition Schemes for parallel Gram-Schmidt Algorithms (NOTE: Acknowledge column parsing is faster when p>10)
+http://homepage.cs.uiowa.edu/~oliveira/PAPERS/mgs-journal.pdf
