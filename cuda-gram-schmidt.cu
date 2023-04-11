@@ -34,7 +34,7 @@ __global__ void vector_subtraction(int n, double *x, double *y) {
  * @EFFECTS *x[i] is now x[i] / y
  */
 __global__ void vector_normalize(int n, double *x, double *y) {
-    double denom = sqrrt(*y);
+    double denom = sqrt(*y);
     int    index = calc1dIndex;
     int    stride = blockDim.x * gridDim.x;
     for (int i = index; i < n; i += stride)
@@ -86,6 +86,17 @@ __global__ void vector_dot_product(int n, double *x, double *y, double *result) 
 // Cuda Entry Points
 // ----------------------------------------
 
+// extern "C" {
+// void     normalize(double *src, double *dst, size_t n);
+// void     projection(double *vector, double *base, double *result, size_t n);
+// void     subtract(double *a, double *b, double *dst, size_t n);
+// void     cudaSetup();
+// void     cudaCleanup();
+// void     cleanupMatrix(double **A, size_t m);
+// double **createTestMatrix(size_t n);
+// double **allocateMatrix(size_t n);
+// }
+
 double *magnitude;
 
 void cudaSetup() {
@@ -134,11 +145,16 @@ double **allocateMatrix(size_t n) {
     for (size_t i = 0; i < n; i++) {
         // Transfer local copy onto the device
         cudaMalloc(&tmp, sizeof(double) * n);
-        cudaMemcpy(tmp, local, sizeof(double) * n, cudaMemcpyHostToDevice);
         // Set the row
         ret[i] = tmp;
     }
     return ret;
+}
+
+void matrixCopy(double **A, double **B, size_t m, size_t n) {
+    for (size_t i = 0; i < m; i++) {
+        cudaMemcpy(B[i], A[i], n * sizeof(double), cudaMemcpyDeviceToDevice);
+    }
 }
 
 void normalize(double *src, double *dst, size_t n) {
@@ -155,7 +171,7 @@ void normalize(double *src, double *dst, size_t n) {
 // Requires the base to have magnitude 1 (to avoid an extra dot product)
 void projection(double *vector, double *base, double *result, size_t n) {
     // Find the numerator for the projection quotient
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, src, src, magnitude);
+    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, vector, base, magnitude);
     // We assume the base to have magnitude 1, saving us from this division
     if (base != result) {
         // Need to copy the base to the result before we multiply, as it happens in-place.

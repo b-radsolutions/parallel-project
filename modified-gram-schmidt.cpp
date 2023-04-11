@@ -1,7 +1,7 @@
 
-#include <cstdlib.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void     normalize(double *src, double *dst, size_t n);
@@ -12,17 +12,19 @@ void     cudaCleanup();
 void     cleanupMatrix(double **A, size_t m);
 double **createTestMatrix(size_t n);
 double **allocateMatrix(size_t n);
+void     matrixCopy(double **A, double **B, size_t m, size_t n);
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
 // each), orthonormalize the matrix A and put the result in the pre-allocated Q.
 void modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
+    // Copy over A into the output Q
+    // for (size_t i = 1; i < m; i++) {
+    //     memcpy(Q[i], A[i], sizeof(double) * n);
+    // }
+    matrixCopy(A, Q, m, n);
+
     // Our first vector is already done
     normalize(Q[0], Q[0], n);
-
-    // Copy over the rest of A into the output Q
-    for (size_t i = 1; i < m; i++) {
-        memcpy(Q[i], A[i], sizeof(double) * n);
-    }
 
     double *tmp = (double *)malloc(sizeof(double) * n);
     for (size_t i = 0; i < m - 1; i++) {
