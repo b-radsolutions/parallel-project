@@ -53,3 +53,6 @@ http://homepage.cs.uiowa.edu/~oliveira/PAPERS/mgs-journal.pdf
 
 Efficient implementations of the modified Gram-Schmidt orthogonalization with a non-standard inner product (NOTE:Sparse and Dense problems)
 https://arxiv.org/pdf/1703.10440.pdf
+
+An Efficient Implementation of the Block Gram-Schmidt Method (NOTE: USING THIS PAPER for better idea of what to use for block size)
+https://www.math.keio.ac.jp/wp-content/uploads/2022/03/12002.pdf
