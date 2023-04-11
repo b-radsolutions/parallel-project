@@ -2,6 +2,7 @@
 // CUDA CODE FOR MODIFIED GRAM SCHMIDT
 //
 
+#include "math.h"
 #include <cstdlib>
 
 #define calc1dIndex blockIdx.x *blockDim.x + threadIdx.x
@@ -33,10 +34,11 @@ __global__ void vector_subtraction(int n, float *x, float *y) {
  * @EFFECTS *x[i] is now x[i] / y
  */
 __global__ void vector_normalize(int n, float *x, float *y) {
-    int index = calc1dIndex;
-    int stride = blockDim.x * gridDim.x;
+    double denom = sqrrt(*y);
+    int    index = calc1dIndex;
+    int    stride = blockDim.x * gridDim.x;
     for (int i = index; i < n; i += stride)
-        x[i] = x[i] / *y;
+        x[i] = x[i] / denom;
 }
 
 /*
@@ -147,7 +149,7 @@ void normalize(double *src, double *dst, size_t n) {
         cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
     // Divide happens here
-    // todo:: add the divide
+    vector_normalize<<<1, n>>>(n, dst, magnitude);
 }
 
 // Requires the base to have magnitude 1 (to avoid an extra dot product)
@@ -160,12 +162,12 @@ void projection(double *vector, double *base, double *result, size_t n) {
         cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
     // Now, we can multiply the base by this magnitude
-    // todo:: add the multiplication
+    vector_mult<<<1, n>>>(n, result, magnitude);
 }
 
 void subtract(double *a, double *b, double *dst, size_t n) {
     if (a != dst) {
         cudaMemcpy(dst, a, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
-    vector_subtraction<<<1, n, sizeof(double) * n>>>(n, dst, b);
+    vector_subtraction<<<1, n>>>(n, dst, b);
 }
