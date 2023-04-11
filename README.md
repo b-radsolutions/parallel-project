@@ -56,3 +56,8 @@ https://arxiv.org/pdf/1703.10440.pdf
 
 An Efficient Implementation of the Block Gram-Schmidt Method (NOTE: USING THIS PAPER for better idea of what to use for block size)
 https://www.math.keio.ac.jp/wp-content/uploads/2022/03/12002.pdf
+
+
+IF TIME ALLOWS DISCUSS:
+The Loss of Orthogonality in the Gram-Schmidt Orthogonalization Process 
+https://www.sciencedirect.com/science/article/pii/S0898122105003366
