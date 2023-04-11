@@ -43,3 +43,7 @@ https://www2.karlin.mff.cuni.cz/~carson/ppt/ENLA_Carson.pdf
 
 A Novel Parallel Algorithm Based on the Gram-Schmidt Method for Tridiagonal Linear Systems of Equations
 https://www.hindawi.com/journals/mpe/2010/268093/
+
+A Parallel implementation of Gram-Schmidt Algorithm for
+Dense Linear System of Equations (NOTE:Take a look at their diagrams and their graphs)
+https://www.ijcaonline.org/volume5/number7/pxc3871079.pdf
