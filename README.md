@@ -40,3 +40,6 @@ https://link.springer.com/chapter/10.1007/11549468_90
 What do we know about
 block Gram-Schmidt?
 https://www2.karlin.mff.cuni.cz/~carson/ppt/ENLA_Carson.pdf
+
+A Novel Parallel Algorithm Based on the Gram-Schmidt Method for Tridiagonal Linear Systems of Equations
+https://www.hindawi.com/journals/mpe/2010/268093/
