@@ -26,15 +26,31 @@ __global__ void vector_subtraction(int n, float *x, float *y) {
  * @PARM n size of array
  * @PARM *x vector array
  * @PARM y number to normalize by
- * @REQUIRES *x to be a pointer in device memory
+ * @REQUIRES *x and *y to be a pointer in device memory
  * @MODIFIES *x
  * @EFFECTS *x[i] is now x[i] / y
  */
-__global__ void vector_normalize(int n, float *x, float y) {
+__global__ void vector_normalize(int n, float *x, float *y) {
     int index = calc1dIndex;
     int stride = blockDim.x * gridDim.x;
     for (int i = index; i < n; i += stride)
-        x[i] = x[i] / y;
+        x[i] = x[i] / *y;
+}
+
+/*
+ * vector_normalize
+ * @PARM n size of array
+ * @PARM *x vector array
+ * @PARM y number to mult by
+ * @REQUIRES *x and *y to be a pointer in device memory
+ * @MODIFIES *x
+ * @EFFECTS *x[i] is now x[i] * y
+ */
+__global__ void vector_mult(int n, float *x, float *y) {
+    int index = calc1dIndex;
+    int stride = blockDim.x * gridDim.x;
+    for (int i = index; i < n; i += stride)
+        x[i] = x[i] * *y;
 }
 
 /*
