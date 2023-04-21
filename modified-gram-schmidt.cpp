@@ -4,29 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-void     normalize(double *src, double *dst, size_t n);
-void     projection(double *vector, double *base, double *result, size_t n);
-void     subtract(double *a, double *b, double *dst, size_t n);
-void     cudaSetup();
-void     cudaCleanup();
-void     cleanupMatrix(double **A, size_t m);
-double **createTestMatrix(size_t n);
-double **allocateMatrix(size_t n);
-void     matrixCopy(double **A, double **B, size_t m, size_t n);
+#include "matrix-operations.hpp"
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
 // each), orthonormalize the matrix A and put the result in the pre-allocated Q.
 void modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
     // Copy over A into the output Q
-    // for (size_t i = 1; i < m; i++) {
-    //     memcpy(Q[i], A[i], sizeof(double) * n);
-    // }
     matrixCopy(A, Q, m, n);
 
     // Our first vector is already done
     normalize(Q[0], Q[0], n);
 
+    // I think this line is wrong; should be done on GPU
     double *tmp = (double *)malloc(sizeof(double) * n);
+
     for (size_t i = 0; i < m - 1; i++) {
         // Subtract the projection of the previously-completed vector from the remaining
         for (size_t j = i + 1; j < m; j++) {
@@ -36,6 +27,7 @@ void modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
         // Normalize the vector we just completed
         normalize(Q[i + 1], Q[i + 1], n);
     }
+    free(tmp);
 }
 
 int main() {
