@@ -105,6 +105,7 @@ void cudaSetup() {
 }
 
 void cudaCleanup() { cudaFree(magnitude); }
+
 void cleanupMatrix(double **A, size_t m) {
     for (size_t i = 0; i < m; i++)
         cudaFree(A[i]);
