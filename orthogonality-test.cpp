@@ -7,38 +7,18 @@ void normalize(double *src, double *dst, size_t n);
 void projection(double *vector, double *base, double *result, size_t n);
 void subtract(double *a, double *b, double *dst, size_t n);
 void dot(double *a, double *b, double *dst, size_t n);
-/*
-//TODO
-void transpose(double **Α, double **ΑT, size_t m, size_t n);
-void matrix_mult(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
-void matrix_sub(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
-double** eye(n);
 
-//Test for orthogonality Frobenius norm
-// concats matrix rows then finds the
-// 2-norm of the vector in R^(m*n)
-double frobeniusNorm(size_t m, size_t n, double **Q){
-    //matrix multiplication to get Q^T * Q - I = E
-    //where E is the error matrix
-    double **output = (double *)malloc(sizeof(double) * n);
-    matrix_mult(Q, m, n, Q, n, output);
-    double **I = eye(m);
-    matrix_sub(output, m, n, I, n, output)
-    double total = 0.0;
-    for(size_t i = 0; i < m; i++) { 
-        for(size_t j = 0; j < m; j++) { 
-            total += output[i][j] * output[i][j];
-        }   
-    }
-    return sqrt(total);
-}
-*/
+//Takes a matrix Q
+//Returns a matrix E
+//      where E = (Q^T *  Q) - I
 
 double** ortho_error(size_t m, size_t n, double **Q) {
     double **E = (double *)malloc(sizeof(double) * n);
+    double *tmp = (double *)malloc(sizeof(double) * n);
     for(size_t i = 0; i < m; i++) { 
-        for(size_t j = 0; j < n; j++) { 
-            E[i][j] = E[i][j] * E[j][i];
+        for(size_t j = 0; j < m; j++) {   
+            dot(Q[i], Q[j], tmp);
+            E[i][j] = *tmp;
             if(i == j) {
                 E[i][j] -= 1;
             }
@@ -46,6 +26,32 @@ double** ortho_error(size_t m, size_t n, double **Q) {
     }
     return E;
 }
+
+/*
+//TODO
+void transpose(double **Α, double **ΑT, size_t m, size_t n);
+void matrix_mult(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
+void matrix_sub(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
+double** eye(n);
+*/
+
+//Test for orthogonality Frobenius norm
+// concats matrix rows then finds the
+// 2-norm of the vector in R^(m*n)
+double frobeniusNorm(size_t m, size_t n, double **E){
+    double total = 0.0;
+    for(size_t i = 0; i < m; i++) { 
+        for(size_t j = 0; j < n; j++) { 
+            total += output[i][j] * output[i][j];
+        }   
+    }
+    return sqrt(total);
+}
+
+
+// double** condition_number(size_t m, size_t n, double **A){
+// }
+
 
 //Testing suite to gauge how orthogonal a matrix A is.
 //takes the infinity norm of the errors of each column in Q
@@ -55,7 +61,7 @@ double inf_norm_test(size_t m, size_t n, double **E){
     double *tmp;
     for(size_t i = 0; i < m; i++) { 
         double max_dot = 0.0;
-        for(size_t j = 0; j < m; j++) { 
+        for(size_t j = 0; j < n; j++) { 
             if(i != j) {
                 dot(E[j], E[i], tmp, n);
                 total += *tmp;
@@ -78,7 +84,7 @@ double one_norm_test(size_t m, size_t n, double **E){
     double *tmp;
     for(size_t i = 0; i < m; i++) { 
         double total = 0.0;
-        for(size_t j = 0; j < m; j++) { 
+        for(size_t j = 0; j < n; j++) { 
             if(i != j) {
                 dot(E[j], E[i], tmp, n);
                 total += *tmp * *tmp;
