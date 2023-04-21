@@ -70,7 +70,6 @@ double one_norm_test(size_t m, size_t n, double **Q){
         dot_totals[i] = total;
         dot_maxes[i] = max_dot;       
     }
-    free(tmp);
 }
 
 //Testing suite to gauge how orthogonal a matrix A is.
