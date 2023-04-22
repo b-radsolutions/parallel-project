@@ -98,10 +98,12 @@ __global__ void vector_dot_product(int n, double *x, double *y, double *result) 
 // }
 
 double *magnitude;
+double *host_magnitude;
 
 void cudaSetup() {
     // Set up memory to hold the result of dot product
     cudaMalloc(&magnitude, sizeof(double));
+    host_magnitude = (double *)malloc(sizeof(double));
 }
 
 void cudaCleanup() { cudaFree(magnitude); }
@@ -187,4 +189,12 @@ void subtract(double *a, double *b, double *dst, size_t n) {
         cudaMemcpy(dst, a, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
     vector_subtraction<<<1, n>>>(n, dst, b);
+}
+
+double dot(double *a, double *b, size_t n) {
+    // Take the dot product
+    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, vector, base, magnitude);
+    // Need to take the result out of device memory
+    cudaMemcpy(host_magnitude, magnitude, sizeof(double) * n, cudaMemcpyDeviceToHost);
+    return *host_magnitude;
 }
