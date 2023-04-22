@@ -4,6 +4,6 @@
 
 #include <stdlib.h>
 
-int write_matrix_to_file(double **A, size_t n, char *filename);
+int write_matrix_to_file_serial(double **A, size_t n, const std::string& filename);
 
 #endif

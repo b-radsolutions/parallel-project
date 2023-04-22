@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 
-#include "tools/matrix-writer.hpp"
+#include "tools/matrix-writer.cpp"
 #include "tools/read_matrix_mpi.cpp"
 #include "tools/read_matrix_serial.cpp"
 #include "matrix-operations.hpp"
@@ -46,27 +46,41 @@ int main(int argc, char *argv[]) {
         printf("MPI Rank 0: ------Running Serial------\n");
         for (int i = 0; i < 7; i++) {
             int n = sizes[i];
+
             cout << "READING Matrix " << n << " by " << n << " in Serial\n";
-            string filename = "tools/gen/" + to_string(n) + ".mtx";
+            string in_filename = "tools/gen/" + to_string(n) + ".mtx";
             start = clock_now();
-            double **input_matrix = read_matrix(filename, n);
+            double **input_matrix = read_matrix(in_filename, n);
             end = clock_now();
             cout << "READ Matrix " << n << " by " << n << " in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n\n";
-
 
             for (int j = 0; j < 4; j++) {
                 cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t" << sizes[i] << "\n";
                 start = clock_now();
-                // TODO THINGS TO TIME
+
+                double **output_matrix1;
                 end = clock_now();
                 cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
 
+                start = clock_now();
+                string out_filename = "out/ModifiedSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mts";
+                write_matrix_to_file_serial(output_matrix1, n, out_filename);
+                end = clock_now();
+                cout << "WROTE TO FILE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
 
                 cout << "RUNNING Serial Classic Gram-Schmidt\t" << types[j] << "\t" << sizes[i] << "\n";
                 start = clock_now();
                 // TODO THINGS TO TIME
+                double **output_matrix2 = input_matrix;
                 end = clock_now();
                 cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
+
+                start = clock_now();
+                string out_filename = "out/ClassicSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mts";
+                write_matrix_to_file_serial(output_matrix2, n, out_filename);
+                end = clock_now();
+                cout << "WROTE TO FILE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
+
             }
             cout << "\n";
         }

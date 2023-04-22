@@ -4,7 +4,7 @@
 #include <iostream>
 
 // A is the nxn matrix
-int write_matrix_to_file(double **A, size_t n, std::string filename) {
+int write_matrix_to_file_serial(double **A, size_t n, const std::string& filename) {
     // Open the file
     std::ofstream wf(filename, std::ios::out | std::ios::binary);
     if (!wf) {
