@@ -1,6 +1,6 @@
 
-generate.out: generate_array.cpp
-	g++ -O3 generate_array.cpp -o generate.out
+generate.out: generate-matrix.cpp matrix-writer.cpp
+	g++ -O3 matrix-writer.cpp generate-matrix.cpp -o generate.out
 
 .PHONY: generate-all
 generate-all: generate.out
