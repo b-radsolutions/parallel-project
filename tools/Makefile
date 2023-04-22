@@ -10,7 +10,7 @@ generate-all: generate.out
 	./generate.out ../data/dense/16.mtx 16 1
 	./generate.out ../data/dense/32.mtx 32 1
 	./generate.out ../data/dense/64.mtx 64 1
-	./generate.out ../dense/128.mtx 128 1
+	./generate.out ../data/dense/128.mtx 128 1
 	./generate.out ../data/dense/256.mtx 256 1
 	./generate.out ../data/dense/512.mtx 512 1
 	./generate.out ../data/dense/1024.mtx 1024 1
@@ -22,7 +22,7 @@ generate-all: generate.out
 	./generate.out ../data/sparse/64.mtx 64 2
 	./generate.out ../data/sparse/128.mtx 128 2
 	./generate.out ../data/sparse/256.mtx 256 2
-	./generate.out vsparse/512.mtx 512 2
+	./generate.out ../data/sparse/512.mtx 512 2
 	./generate.out ../data/sparse/1024.mtx 1024 2
 
 	mkdir -p ../data/well-conditioned
