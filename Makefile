@@ -10,3 +10,6 @@ test: test.out
 
 test.out: test.cu
 	nvcc -g -G -gencode arch=compute_70,code=sm_70 cuda-gram-schmidt.cu test.cu -o test.out
+
+scream: scream_matrix.cpp read_matrix_serial.cpp
+	g++ -O3 scream_matrix.cpp read_matrix_serial.cpp -o scream
