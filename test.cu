@@ -10,6 +10,8 @@
 
 __global__ void vector_subtraction(int n, double *x, double *y);
 __global__ void vector_dot_product(int n, double *x, double *y, double *result);
+__global__ void many_vector_subtractions(double *base, double **vectors, double *scalars,
+                                         size_t num_vectors, size_t n);
 
 const size_t arrSize = N * sizeof(double);
 
@@ -161,6 +163,68 @@ void testSubtraction() {
     }
 }
 
+void testManySubtractionFunction() {
+    // First, let's test many_vector_subtraction
+    // Create A = [ \vec 0 & \vec 0 ... & \vec 0 ]
+    // Create base = \vec 1
+    // Create coefficients = [ 1 & 2 ... & n ]
+    // Assert that A = [ \vec -1 & \vec -2 ... & \vec -n ]
+    // Vectors have size nx1, matrices have size nxm
+    const size_t M = N * 2;
+
+    double **A, **Arepr, *tmp, *tmprepr;
+    cudaMalloc(&A, sizeof(double *) * M);
+    Arepr = (double **)malloc(sizeof(double *) * M);
+
+    // Set up that zero vector
+    tmprepr = (double *)malloc(sizeof(double) * N);
+    for (size_t i = 0; i < N; i++)
+        tmprepr[i] = 0;
+
+    for (size_t i = 0; i < M; i++) {
+        cudaMalloc(&tmp, sizeof(double) * N);
+        // Copy the zero vector in everywhere
+        cudaMemcpy(tmp, tmprepr, sizeof(double) * N, cudaMemcpyHostToDevice);
+        Arepr[i] = tmp;
+    }
+    cudaMemcpy(A, Arepr, sizeof(double) * M, cudaMemcpyHostToDevice);
+
+    // Create the coefficients
+    double *coefficients, *coefficientsrepr;
+    cudaMalloc(&coefficients, sizeof(double) * M);
+    coefficientsrepr = (double *)malloc(sizeof(double) * M);
+    for (size_t i = 0; i < M; i++)
+        coefficientsrepr[i] = (i + 1);
+    cudaMemcpy(coefficients, coefficientsrepr, sizeof(double) * M,
+               cudaMemcpyHostToDevice);
+
+    // Create the 'base' vector of 1s
+    double *base;
+    cudaMalloc(&base, sizeof(double) * N);
+    for (size_t i = 0; i < N; i++)
+        tmprepr[i] = 1;
+    cudaMemcpy(base, tmprepr, sizeof(double) * N, cudaMemcpyHostToDevice);
+
+    // Run the code:
+    printf("Testing 'many_vector_subtractions'\n");
+    many_vector_subtractions<<<1, N>>>(base, A, coefficients, M, N);
+
+    // Look at the vectors in A and ensure they are as expected
+    cudaMemcpy(Arepr, A, sizeof(double) * M, cudaMemcpyDeviceToHost);
+    for (size_t i = 0; i < M; i++) {
+        cudaMemcpy(tmprepr, Arepr[i], sizeof(double) * N, cudaMemcpyDeviceToHost);
+        double expected = -(((double)i) + 1.);
+        for (size_t j = 0; j < N; j++) {
+            if (fabs(tmprepr[j] - expected) >= FEPSILON) {
+                printf(
+                    "Failed. Subtract Many Vectors index %lu should be: %f ; got: %f\n",
+                    i, expected, tmprepr[j]);
+                exit(1);
+            }
+        }
+    }
+}
+
 int main() {
     // --------------------
     createTestStructures();
@@ -170,6 +234,8 @@ int main() {
     createTestStructures();
     testSubtraction();
     cleanTestStructures();
+    // --------------------
+    testManySubtractionFunction();
     // --------------------
     printf("\n\nAll tests passed.\n");
     return 0;
