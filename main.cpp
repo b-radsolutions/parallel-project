@@ -31,11 +31,12 @@ int main(int argc, char *argv[])
   time_in_secs = ((double)(end - start)) / clock_frequency;
   printf("%f\n", time_in_secs);
 
-  print("Running Parallel Modified Gram-Schmidt\n");
+  // PARALLELIZED
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
   MPI_Comm_size(MPI_COMM_WORLD, &numranks);
 
+  print("Running Parallel Modified Gram-Schmidt\n");
   start = clock_now();
   // THINGS TO TIME
   end = clock_now();
@@ -44,14 +45,7 @@ int main(int argc, char *argv[])
     time_in_secs = ((double)(end - start)) / clock_frequency;
     printf("%f\n", time_in_secs);
   }
-  // Free memory
-  MPI_Finalize();
-
   print("Running Parallel Normal Gram-Schmidt\n");
-  MPI_Init(&argc, &argv);
-  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-  MPI_Comm_size(MPI_COMM_WORLD, &numranks);
-
   start = clock_now();
   // THINGS TO TIME
   end = clock_now();
