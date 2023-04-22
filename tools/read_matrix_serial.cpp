@@ -1,13 +1,15 @@
 
 #include <assert.h>
 #include <fstream>
+#include <iostream>
 
-double **read_matrix(char *filename, size_t n) {
+double **read_matrix(const std::string& filename, size_t n) {
     // Open the file
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file.is_open()) {
-        printf("Failed to open '%s'\n", filename);
-        return NULL;
+        std::cerr << "Failed to open file " << filename << "\n";
+        MPI_Finalize();
+        exit(1);
     }
 
     // Calculate file size
@@ -19,15 +21,16 @@ double **read_matrix(char *filename, size_t n) {
     size_t read_n;
     file.read((char *)(&read_n), sizeof(size_t));
     if (read_n != n) {
-        printf("Matrix is of size N=%lu, but expected N=%lu\n", read_n, n);
-        return NULL;
+        std::cerr << "Matrix is of size " << read_n << " but expected N= " << n <<"\n";
+        MPI_Finalize();
+        exit(1);
     }
     // Make sure this file is properly sized
     size_t expected_size = sizeof(size_t) + sizeof(double) * n * n;
     if (file_size != expected_size) {
-        printf("Matrix file seems to be an unexpected size. expected = %lu ; got = %lu\n",
-               expected_size, file_size);
-        return NULL;
+        std::cerr << "Matrix file seems to be an unexpected size. expected = "<< expected_size <<" ; got = "<< file_size << "\n";
+        MPI_Finalize();
+        exit(1);
     }
 
     // Allocate the matrix
@@ -37,8 +40,9 @@ double **read_matrix(char *filename, size_t n) {
         double *current = (double *)malloc(sizeof(double) * n);
         for (int y = 0; y < n; y++) {
             if (file.peek() == EOF) {
-                printf("Reached End Of File too soon\n");
-                return NULL;
+                std::cerr << "Reached End Of File too soon\n";
+                MPI_Finalize();
+                exit(1);
             }
             double *loc = current + y;
             file.read((char *)(loc), sizeof(double));

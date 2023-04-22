@@ -1,7 +1,9 @@
 #include <cstdio>
+#include <iostream>
 #include <cstdlib>
 #include <mpi.h>
 #include <string>
+#include <cstring>
 
 #include "tools/matrix-writer.hpp"
 #include "tools/read_matrix_mpi.cpp"
@@ -19,6 +21,7 @@ long long unsigned clock_now() {
 }
 
 #define threads 1024
+using namespace std;
 
 // Takes in args, and runs MPI
 int main(int argc, char *argv[]) {
@@ -37,29 +40,38 @@ int main(int argc, char *argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
 
-    int sizes[8] = { 4, 16, 32, 64, 128, 256, 512, 1024 };
+    int sizes[8] = { 16, 32, 64, 128, 256, 512, 1024 };
     std::string types[4] = { "Dense", "Sparse", "Well-conditioned", "Ill-conditioned" };
     if (world_rank == MASTER) {
         printf("MPI Rank 0: ------Running Serial------\n");
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 4; j++) {
-                printf("Running Serial Modified Gram-Schmidt\t,%s\t%d\n", &types[j], sizes[i]);
-                start = clock_now();
-                // TODO THINGS TO TIME
-                end = clock_now();
-                printf("MPI Rank 0: Serial Modified Gram-Schmidt Done in %llu cycles (%f secs)\n", (end - start),
-                       (end - start) / clock_frequency);
+        for (int i = 0; i < 7; i++) {
+            int n = sizes[i];
+            cout << "READING Matrix " << n << " by " << n << " in Serial\n";
+            string filename = "tools/gen/" + to_string(n) + ".mtx";
+            start = clock_now();
+            double **input_matrix = read_matrix(filename, n);
+            end = clock_now();
+            cout << "READ Matrix " << n << " by " << n << " in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n\n";
 
-                printf("Running Serial Classic Gram-Schmidt\t,%s\t%d\n", &types[j], sizes[i]);
+
+            for (int j = 0; j < 4; j++) {
+                cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t" << sizes[i] << "\n";
                 start = clock_now();
                 // TODO THINGS TO TIME
                 end = clock_now();
-                printf("MPI Rank 0: Serial Classic Gram-Schmidt Done in %d cycles (%f secs)\n", (end - start),
-                       (end - start) / clock_frequency);
+                cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
+
+
+                cout << "RUNNING Serial Classic Gram-Schmidt\t" << types[j] << "\t" << sizes[i] << "\n";
+                start = clock_now();
+                // TODO THINGS TO TIME
+                end = clock_now();
+                cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
             }
+            cout << "\n";
         }
     }
-
+/*
   printf("------Running Parallel------\n");
     for (int i = 0; i < 8; i++){
         for (int j = 0; j < 4; j++){
@@ -78,6 +90,7 @@ int main(int argc, char *argv[]) {
             printf("MPI Rank 0: Parallel Classic Gram-Schmidt Done in %llu cycles (%f secs)\n", (end - start), (end - start) / clock_frequency);
         }
     }
+    */
     // Free memory
     MPI_Finalize();
 

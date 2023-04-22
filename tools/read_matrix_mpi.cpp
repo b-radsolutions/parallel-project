@@ -27,4 +27,5 @@ double **read_partial_matrix(size_t n, size_t first_row, size_t num_rows, MPI_Fi
 
     printf("Read %d double values (starting at %ld, wanted to read %ld)\n", read_count,
            (size_t)offset, number_to_read);
+    return NULL;
 }
