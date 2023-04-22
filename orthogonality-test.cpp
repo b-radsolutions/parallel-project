@@ -8,11 +8,11 @@
 //      where E = (Q^T *  Q) - I
 double** orthoError(size_t m, size_t n, double **Q) {
     double **E = allocateMatrix(m);
-    double *tmp = (double *)malloc(sizeof(double) * n);
+    double tmp;
     for(size_t i = 0; i < m; i++) { 
         for(size_t j = 0; j < m; j++) {   
-            dot(Q[i], Q[j], tmp, n);
-            E[i][j] = *tmp;
+            tmp = dot(Q[i], Q[j], n);
+            E[i][j] = tmp;
             if(i == j) {
                 E[i][j] -= 1;
             }

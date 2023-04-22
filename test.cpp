@@ -21,7 +21,6 @@ void createTestStructures() {
     matrixZeros = allocateMatrix(M);
     matrixOnes = allocateMatrix(M);
 
-    
     for (size_t i = 0; i < M; i++) {
         for (size_t j = 0; j < M; j++) {
             matrixA[j][i] = (double)(i + 1);
@@ -135,12 +134,11 @@ void testInfNorm() {
     }
 }
 
-
 void testOneNorm() {
     double errorNorm, expected;
     printf("One Norm for the Identiy matrix\n");
     errorNorm = oneNorm(M, M, matrixI);
-    expected = sqrt(2)*M;
+    expected = M;
     if (fabs(expected - errorNorm) >= FEPSILON) {
         printf("Failed. Inf Norm for I is"
             "%f ; got: %f\n",
@@ -158,5 +156,10 @@ void cleanUp() {
 }
 
 int main() {
-
+    createTestStructures();
+    testOrthoError();
+    testFrob();
+    testInfNorm();
+    testOneNorm();
+    cleanUp();
 }
