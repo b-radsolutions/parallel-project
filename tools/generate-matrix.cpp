@@ -4,9 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        printf("Usage: %s [name of output file] [matrix size 'N']\n", argv[0]);
+        printf("Usage: %s [name of output file] [matrix size 'N'] [Type(1,2,3,4) '1']\n", argv[0]);
         return 1;
     }
     // Get the filename to write to
@@ -58,8 +58,14 @@ int main(int argc, char *argv[])
             double *current = (double *)malloc(sizeof(double) * n);
             for (int y = 0; y < n; y++)
             {
-                double value = 0;
-                current[y] = value;
+                if (x == y)
+                {
+                    current[y] = 1;
+                }
+                else
+                {
+                    current[y] = 0;
+                }
             }
             A[x] = current;
         }
@@ -69,6 +75,11 @@ int main(int argc, char *argv[])
         {
             int x = rand() % n;
             int y = rand() % n;
+            while (x == y)
+            {
+                x = rand() % n;
+                y = rand() % n;
+            }
             double value = ((double)rand() / (double)RAND_MAX);
             A[x][y] = value;
         }
@@ -90,12 +101,11 @@ int main(int argc, char *argv[])
             double *current = (double *)malloc(sizeof(double) * n);
             for (int y = 0; y < n; y++)
             {
-                double value = 0;
-                current[y] = value;
+                current[y] = 0;
             }
             A[x] = current;
         }
-        for (int x = 0; x < n; i++)
+        for (int x = 0; x < n; x++)
         {
             if (x < n / 2)
             {
@@ -142,7 +152,7 @@ int main(int argc, char *argv[])
             A[x] = current;
         }
         // Modify the matrix to make it ill-conditioned
-        for (int x = 0; x < n; i++)
+        for (int x = 0; x < n; x++)
         {
             for (int y = 0; y < n; y++)
             {
@@ -161,5 +171,9 @@ int main(int argc, char *argv[])
         // Save the created matrix to file
         write_matrix_to_file(A, n, filename);
         printf("Wrote matrix to file.\n");
+    }
+    else
+    {
+        printf("UNKNOWN TYPE\n");
     }
 }
