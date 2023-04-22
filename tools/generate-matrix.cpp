@@ -2,6 +2,8 @@
 #include "matrix-writer.hpp"
 #include <fstream>
 
+#define sparity .1
+
 int main(int argc, char *argv[])
 {
     if (argc != 4)
@@ -21,15 +23,15 @@ int main(int argc, char *argv[])
     // 4. Ill Conditioned
     size_t type = std::atoi(argv[3]);
 
-    double sparity = .1;
+    // Everyone uses
+    size_t number_elements = n * n;
+    double **A = (double **)malloc(sizeof(double *) * n);
 
     if (type == 1)
     {
         printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
 
-        // Create and insert double values into matrix
-        size_t number_elements = n * n;
-        double **A = (double **)malloc(sizeof(double *) * n);
+        // insert double values into matrix
         for (int x = 0; x < n; x++)
         {
             double *current = (double *)malloc(sizeof(double) * n);
@@ -50,9 +52,7 @@ int main(int argc, char *argv[])
     {
         printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
 
-        // Create and insert double values into matrix
-        size_t number_elements = n * n;
-        double **A = (double **)malloc(sizeof(double *) * n);
+        // insert double values into matrix
         for (int x = 0; x < n; x++)
         {
             double *current = (double *)malloc(sizeof(double) * n);
@@ -93,9 +93,7 @@ int main(int argc, char *argv[])
     {
         printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
 
-        // Create and insert double values into matrix
-        size_t number_elements = n * n;
-        double **A = (double **)malloc(sizeof(double *) * n);
+        // insert double values into matrix
         for (int x = 0; x < n; x++)
         {
             double *current = (double *)malloc(sizeof(double) * n);
@@ -146,8 +144,7 @@ int main(int argc, char *argv[])
             double *current = (double *)malloc(sizeof(double) * n);
             for (int y = 0; y < n; y++)
             {
-                double value = 0;
-                current[y] = value;
+                current[y] = 0;
             }
             A[x] = current;
         }
