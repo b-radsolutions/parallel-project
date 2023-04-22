@@ -8,8 +8,7 @@ double **read_matrix(const std::string& filename, size_t n) {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file.is_open()) {
         std::cerr << "Failed to open file " << filename << "\n";
-        MPI_Finalize();
-        exit(1);
+        return NULL;
     }
 
     // Calculate file size
@@ -22,15 +21,15 @@ double **read_matrix(const std::string& filename, size_t n) {
     file.read((char *)(&read_n), sizeof(size_t));
     if (read_n != n) {
         std::cerr << "Matrix is of size " << read_n << " but expected N= " << n <<"\n";
-        MPI_Finalize();
-        exit(1);
+        return NULL;
+
     }
     // Make sure this file is properly sized
     size_t expected_size = sizeof(size_t) + sizeof(double) * n * n;
     if (file_size != expected_size) {
         std::cerr << "Matrix file seems to be an unexpected size. expected = "<< expected_size <<" ; got = "<< file_size << "\n";
-        MPI_Finalize();
-        exit(1);
+        return NULL;
+
     }
 
     // Allocate the matrix
@@ -41,8 +40,8 @@ double **read_matrix(const std::string& filename, size_t n) {
         for (int y = 0; y < n; y++) {
             if (file.peek() == EOF) {
                 std::cerr << "Reached End Of File too soon\n";
-                MPI_Finalize();
-                exit(1);
+                return NULL;
+
             }
             double *loc = current + y;
             file.read((char *)(loc), sizeof(double));

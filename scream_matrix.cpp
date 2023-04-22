@@ -1,8 +1,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 
-double **read_matrix(char *filename, size_t n);
+double **read_matrix(const std::string& filename, size_t n);
 
 // Don't use this...
 void print_matrix(double **A, size_t n) {
