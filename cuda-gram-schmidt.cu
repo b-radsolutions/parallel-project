@@ -82,20 +82,50 @@ __global__ void vector_dot_product(int n, double *x, double *y, double *result) 
     }
 }
 
+/**
+ * Subtract the base vector from every other vector using the magnitude in scalars for the
+ * base vector.
+ * V = V - CB where v = vectors, b = base, and C is scalars.
+ * len(result) == len(vectors) == len(scalars) == num_vectors ;
+ * len(vectors[:]) == len(base) == n
+ */
+__global__ void many_vector_subtractions(double *base, double **vectors, double *scalars,
+                                         size_t num_vectors, size_t n) {
+
+    int    index = calc1dIndex;
+    int    stride = blockDim.x * gridDim.x;
+    size_t total = num_vectors * n;
+
+    for (int i = index; i < total; i += stride) {
+        int block = i / n;
+        int vi = i % n;
+        vectors[block][vi] -= base[vi] * scalars[block];
+    }
+}
+
+/**
+ * Dot the base with every other vector, returning the individual dot products in result.
+ * len(result) == len(vectors) == num_vectors ;
+ * len(vectors[:]) == len(base) == n
+ */
+__global__ void many_vector_dot_product(double *base, double **vectors,
+                                        size_t num_vectors, size_t n, double *result) {
+    extern __shared__ double temp[];
+
+    int    index = calc1dIndex;
+    int    stride = blockDim.x * gridDim.x;
+    size_t total = num_vectors * n;
+
+    for (int i = index; i < total; i += stride) {
+        int block = i / n;
+        int vi = i % n;
+        temp[block] += vectors[block][vi] * base[vi];
+    }
+}
+
 // ----------------------------------------
 // Cuda Entry Points
 // ----------------------------------------
-
-// extern "C" {
-// void     normalize(double *src, double *dst, size_t n);
-// void     projection(double *vector, double *base, double *result, size_t n);
-// void     subtract(double *a, double *b, double *dst, size_t n);
-// void     cudaSetup();
-// void     cudaCleanup();
-// void     cleanupMatrix(double **A, size_t m);
-// double **createTestMatrix(size_t n);
-// double **allocateMatrix(size_t n);
-// }
 
 double *magnitude;
 
@@ -189,47 +219,6 @@ void subtract(double *a, double *b, double *dst, size_t n) {
     vector_subtraction<<<1, n>>>(n, dst, b);
 }
 
-/**
- * Subtract the base vector from every other vector using the magnitude in scalars for the
- * base vector.
- * V = V - CB where v = vectors, b = base, and C is scalars.
- * len(result) == len(vectors) == len(scalars) == num_vectors ;
- * len(vectors[:]) == len(base) == n
- */
-__global__ void many_vector_subtractions(double *base, double **vectors, double *scalars,
-                                         size_t num_vectors, size_t n) {
-
-    int    index = calc1dIndex;
-    int    stride = blockDim.x * gridDim.x;
-    size_t total = num_vectors * n;
-
-    for (int i = index; i < total; i += stride) {
-        int block = i / n;
-        int vi = i % n;
-        vectors[block][vi] -= base[vi] * scalars[block];
-    }
-}
-
-/**
- * Dot the base with every other vector, returning the individual dot products in result.
- * len(result) == len(vectors) == num_vectors ;
- * len(vectors[:]) == len(base) == n
- */
-__global__ void many_vector_dot_product(double *base, double **vectors,
-                                        size_t num_vectors, size_t n, double *result) {
-    extern __shared__ double temp[];
-
-    int    index = calc1dIndex;
-    int    stride = blockDim.x * gridDim.x;
-    size_t total = num_vectors * n;
-
-    for (int i = index; i < total; i += stride) {
-        int block = i / n;
-        int vi = i % n;
-        temp[block] += vectors[block][vi] * base[vi];
-    }
-}
-
 // Removes the projection of the completed index from every vector afterwards. A
 // has `m` columns and `n` rows.
 void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
@@ -248,4 +237,5 @@ void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
     // todo:: incorporate MPI
     // Use that dot product to do vector subtractions
     many_vector_subtractions<<<1, n>>>(base, remainder, dots, remainder_count, n);
+    cudaFree(dots);
 }
