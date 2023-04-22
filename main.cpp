@@ -3,8 +3,9 @@
 #include <mpi.h>
 #include <string>
 
-#include "read_matrix_mpi.cpp"
-#include "read_matrix_serial.cpp"
+#include "tools/matrix-writer.hpp"
+#include "tools/read_matrix_mpi.cpp"
+#include "tools/read_matrix_serial.cpp"
 #include "matrix-operations.hpp"
 
 
