@@ -1,6 +1,7 @@
 
 #include "matrix-writer.hpp"
 #include <fstream>
+#include <string>
 
 #define sparity .1
 
@@ -12,7 +13,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     // Get the filename to write to
-    char *filename = argv[1];
+    std::string filename = argv[1];
     // Get the number N of the matrix
     size_t n = std::atoi(argv[2]);
 
@@ -29,7 +30,7 @@ int main(int argc, char *argv[])
 
     if (type == 1)
     {
-        printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
+        printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
         // insert double values into matrix
         for (int x = 0; x < n; x++)
@@ -45,12 +46,12 @@ int main(int argc, char *argv[])
         printf("Generated %lu elements.\n", number_elements);
 
         // Save the created matrix to file
-        write_matrix_to_file(A, n, filename);
+        write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
     else if (type == 2)
     {
-        printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
+        printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
         // insert double values into matrix
         for (int x = 0; x < n; x++)
@@ -86,12 +87,12 @@ int main(int argc, char *argv[])
         printf("Generated %lu elements.\n", number_elements);
 
         // Save the created matrix to file
-        write_matrix_to_file(A, n, filename);
+        write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
     else if (type == 3)
     {
-        printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
+        printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
         // insert double values into matrix
         for (int x = 0; x < n; x++)
@@ -129,12 +130,12 @@ int main(int argc, char *argv[])
         printf("Generated %lu elements.\n", number_elements);
 
         // Save the created matrix to file
-        write_matrix_to_file(A, n, filename);
+        write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
     else if (type == 4)
     {
-        printf("Generating matrix '%s' with size %lux%lu\n", filename, n, n);
+        printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
         // Create and insert double values into matrix
         size_t number_elements = n * n;
@@ -166,7 +167,7 @@ int main(int argc, char *argv[])
         printf("Generated %lu elements.\n", number_elements);
 
         // Save the created matrix to file
-        write_matrix_to_file(A, n, filename);
+        write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
     else

@@ -9,6 +9,7 @@
 #include "tools/read_matrix_mpi.cpp"
 #include "tools/read_matrix_serial.cpp"
 #include "matrix-operations.hpp"
+//#include "modified-gram-schmidt.cpp"
 
 
 // #include "clockcycle.h"
@@ -20,7 +21,6 @@ long long unsigned clock_now() {
     return 0;
 }
 
-#define threads 1024
 using namespace std;
 
 // Takes in args, and runs MPI
@@ -40,30 +40,29 @@ int main(int argc, char *argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
 
-    int sizes[8] = { 16, 32, 64, 128, 256, 512, 1024 };
-    std::string types[4] = { "Dense", "Sparse", "Well-conditioned", "Ill-conditioned" };
+    int sizes[8] = {4, 16, 32, 64, 128, 256, 512, 1024 };
+    std::string types[4] = { "dense", "sparse", "well-conditioned", "ill-conditioned" };
     if (world_rank == MASTER) {
         printf("MPI Rank 0: ------Running Serial------\n");
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             int n = sizes[i];
-
-            cout << "READING Matrix " << n << " by " << n << " in Serial\n";
-            string in_filename = "tools/gen/" + to_string(n) + ".mtx";
-            start = clock_now();
-            double **input_matrix = read_matrix(in_filename, n);
-            end = clock_now();
-            cout << "READ Matrix " << n << " by " << n << " in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n\n";
-
             for (int j = 0; j < 4; j++) {
+                string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
+                cout << "READING Matrix " << in_filename << "\t" << n << " by " << n << " in Serial\n";
+                start = clock_now();
+                double **input_matrix = read_matrix(in_filename, n);
+                end = clock_now();
+                cout << "READ Matrix " << n << " by " << n << " in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
+
                 cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t" << sizes[i] << "\n";
                 start = clock_now();
 
-                double **output_matrix1;
+                double **output_matrix1 = input_matrix;
                 end = clock_now();
                 cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
-
+                // TODO THINGS TO TIME
                 start = clock_now();
-                string out_filename = "out/ModifiedSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mts";
+                string out_filename = "out/ModifiedSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mtx";
                 write_matrix_to_file_serial(output_matrix1, n, out_filename);
                 end = clock_now();
                 cout << "WROTE TO FILE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
@@ -76,10 +75,10 @@ int main(int argc, char *argv[]) {
                 cout << "DONE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
 
                 start = clock_now();
-                string out_filename = "out/ClassicSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mts";
+                out_filename = "out/ClassicSerial" + to_string(n) + "by" + to_string(n) + types[j] + ".mtx";
                 write_matrix_to_file_serial(output_matrix2, n, out_filename);
                 end = clock_now();
-                cout << "WROTE TO FILE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n";
+                cout << "WROTE TO FILE in "<< (end - start) << " cycles ("<< (end - start) / clock_frequency << " secs)\n\n";
 
             }
             cout << "\n";

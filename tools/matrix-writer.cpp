@@ -2,6 +2,7 @@
 #include "matrix-writer.hpp"
 #include <fstream>
 #include <iostream>
+#include <string>
 
 // A is the nxn matrix
 int write_matrix_to_file_serial(double **A, size_t n, const std::string& filename) {
