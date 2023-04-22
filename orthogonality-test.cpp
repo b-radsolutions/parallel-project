@@ -11,7 +11,7 @@ double** orthoError(size_t m, size_t n, double **Q) {
     double *tmp = (double *)malloc(sizeof(double) * n);
     for(size_t i = 0; i < m; i++) { 
         for(size_t j = 0; j < m; j++) {   
-            dot(Q[i], Q[j], tmp);
+            dot(Q[i], Q[j], tmp, n);
             E[i][j] = *tmp;
             if(i == j) {
                 E[i][j] -= 1;
@@ -43,14 +43,14 @@ double frobeniusNorm(size_t m, size_t n, double **E){
 //and then takes the 1-norm of each vector inf-norm
 double infNorm(size_t m, size_t n, double **E){
     double error = 0.0;
-    double *tmp;
+    double tmp;
     for(size_t i = 0; i < m; i++) { 
         double max_dot = 0.0;
         for(size_t j = 0; j < n; j++) { 
             if(i != j) {
-                dot(E[j], E[i], tmp, n);
-                if(*tmp > max_dot){
-                    max_dot = *tmp;
+                tmp = dot(E[j], E[i], n);
+                if(tmp > max_dot){
+                    max_dot = tmp;
                 }
             }
         }
@@ -65,13 +65,13 @@ double infNorm(size_t m, size_t n, double **E){
 //those sums.
 double oneNorm(size_t m, size_t n, double **E){
     double error = 0.0;
-    double *tmp;
+    double tmp;
     for(size_t i = 0; i < m; i++) { 
         double total = 0.0;
         for(size_t j = 0; j < n; j++) { 
             if(i != j) {
-                dot(E[j], E[i], tmp, n);
-                total += *tmp * *tmp;
+                tmp = dot(E[j], E[i], n);
+                total += tmp * tmp;
             }
         }
         error += sqrt(total);   
