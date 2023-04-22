@@ -1,19 +1,13 @@
-#include <cstdlib.h>
 #include <stddef.h>
 #include <string.h>
 #include <cmath>
-
-void normalize(double *src, double *dst, size_t n);
-void projection(double *vector, double *base, double *result, size_t n);
-void subtract(double *a, double *b, double *dst, size_t n);
-void dot(double *a, double *b, double *dst, size_t n);
+#include "matrix-operations.hpp"
 
 //Takes a matrix Q
 //Returns a matrix E
 //      where E = (Q^T *  Q) - I
-
-double** ortho_error(size_t m, size_t n, double **Q) {
-    double **E = (double *)malloc(sizeof(double) * n);
+double** orthoError(size_t m, size_t n, double **Q) {
+    double **E = allocateMatrix(m);
     double *tmp = (double *)malloc(sizeof(double) * n);
     for(size_t i = 0; i < m; i++) { 
         for(size_t j = 0; j < m; j++) {   
@@ -27,14 +21,6 @@ double** ortho_error(size_t m, size_t n, double **Q) {
     return E;
 }
 
-/*
-//TODO
-void transpose(double **Α, double **ΑT, size_t m, size_t n);
-void matrix_mult(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
-void matrix_sub(double **Α, size_t m, size_t n_m, double **B, size_t n1, double **output);
-double** eye(n);
-*/
-
 //Test for orthogonality Frobenius norm
 // concats matrix rows then finds the
 // 2-norm of the vector in R^(m*n)
@@ -42,7 +28,7 @@ double frobeniusNorm(size_t m, size_t n, double **E){
     double total = 0.0;
     for(size_t i = 0; i < m; i++) { 
         for(size_t j = 0; j < n; j++) { 
-            total += output[i][j] * output[i][j];
+            total += E[i][j] * E[i][j];
         }   
     }
     return sqrt(total);
@@ -52,11 +38,10 @@ double frobeniusNorm(size_t m, size_t n, double **E){
 // double** condition_number(size_t m, size_t n, double **A){
 // }
 
-
 //Testing suite to gauge how orthogonal a matrix A is.
 //takes the infinity norm of the errors of each column in Q
 //and then takes the 1-norm of each vector inf-norm
-double inf_norm_test(size_t m, size_t n, double **E){
+double infNorm(size_t m, size_t n, double **E){
     double error = 0.0;
     double *tmp;
     for(size_t i = 0; i < m; i++) { 
@@ -64,7 +49,6 @@ double inf_norm_test(size_t m, size_t n, double **E){
         for(size_t j = 0; j < n; j++) { 
             if(i != j) {
                 dot(E[j], E[i], tmp, n);
-                total += *tmp;
                 if(*tmp > max_dot){
                     max_dot = *tmp;
                 }
@@ -79,7 +63,7 @@ double inf_norm_test(size_t m, size_t n, double **E){
 //takes the 2-norm of the errors of each column with 
 //respect to every other columns and finds the 1-norm of
 //those sums.
-double one_norm_test(size_t m, size_t n, double **E){
+double oneNorm(size_t m, size_t n, double **E){
     double error = 0.0;
     double *tmp;
     for(size_t i = 0; i < m; i++) { 

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "orthogonality-test.hpp"
 #include "matrix-operations.hpp"
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
@@ -37,7 +38,7 @@ int main() {
     // Create the matrix to use.
     srand(0);
     const size_t n = 10;
-    double     **A, **Q;
+    double     **A, **Q, **E;
     A = createTestMatrix(n);
     printf("Matrix A (%dx%d) successfully generated\n", n, n);
     Q = allocateMatrix(n);
@@ -47,11 +48,26 @@ int main() {
     modified_gram_schmidt(A, n, n, Q);
     printf("Modified gram schmidt complete\n", n, n);
 
+    //Test Gram-Schmidt accuracy
+    E = orthoError(n, n, Q);   
+
+    //Frobenius Norm
+    double frob = frobeniusNorm(n, n, E);
+    printf("Frobenius norm = %f", frob);
+
+    //a, b norms
+    double inf_norm = infNorm(n, n, E);
+    printf("inf norm = %f", inf_norm);
+    double one_norm = oneNorm(n, n, E);
+    printf("one norm = %f", one_norm);
+
     // Cleanup
     cleanupMatrix(A, n);
     printf("cleanupMatrix(A) complete\n");
     cleanupMatrix(Q, n);
     printf("cleanupMatrix(Q) complete\n");
+    cleanupMatrix(E, n);
+    printf("cleanupMatrix(E) complete\n");
     cudaCleanup();
     printf("cudaCleanup() complete\n");
 }
