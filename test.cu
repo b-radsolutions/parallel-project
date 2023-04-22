@@ -109,11 +109,11 @@ void testSubtraction() {
     double  expected;
 
     // An array minus the zero vector should be the original array
-    vector_subtraction<<<1, N>>>(N, arrayA, arrayEmpty);
+    vector_subtraction<<<1, N>>>(N, arrayEmpty, arrayA);
     cudaMemcpy(arr_result, arrayEmpty, arrSize, cudaMemcpyDeviceToHost);
-    printf("arrayA - the zero vector\n");
+    printf("the zero vector - arrayA\n");
     for (size_t i = 0; i < N; i++) {
-        expected = i + 1;
+        expected = -(((double)i) + 1.);
         if (fabs(expected - arr_result[i]) >= FEPSILON) {
             printf("Failed vector subtraction. expected: %f ; got: %f\n", expected,
                    arr_result[i]);
@@ -122,11 +122,11 @@ void testSubtraction() {
     }
 
     // An array minus the one vector
-    vector_subtraction<<<1, N>>>(N, arrayA, arrayOne);
+    vector_subtraction<<<1, N>>>(N, arrayOne, arrayA);
     cudaMemcpy(arr_result, arrayOne, arrSize, cudaMemcpyDeviceToHost);
     printf("arrayA - the one vector\n");
     for (size_t i = 0; i < N; i++) {
-        expected = i;
+        expected = -((double)i);
         if (fabs(expected - arr_result[i]) >= FEPSILON) {
             printf("Failed vector subtraction. expected: %f ; got: %f\n", expected,
                    arr_result[i]);
@@ -135,7 +135,7 @@ void testSubtraction() {
     }
 
     // An array minus itself
-    vector_subtraction<<<1, N>>>(N, arrayA, arrayB);
+    vector_subtraction<<<1, N>>>(N, arrayB, arrayA);
     cudaMemcpy(arr_result, arrayB, arrSize, cudaMemcpyDeviceToHost);
     printf("arrayA - arrayB\n");
     expected = 0;
@@ -152,9 +152,10 @@ void testSubtraction() {
     for (size_t i = 0; i < N; i++) {
         expected = i + 1;
         if (fabs(expected - arr_result[i]) >= FEPSILON) {
-            printf("Failed. Vector subtraction should not affect the minuend. expected: "
-                   "%f ; got: %f\n",
-                   expected, arr_result[i]);
+            printf(
+                "Failed. Vector subtraction should not affect the subtrahend. expected: "
+                "%f ; got: %f\n",
+                expected, arr_result[i]);
             exit(1);
         }
     }
