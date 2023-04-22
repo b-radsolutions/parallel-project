@@ -119,7 +119,20 @@ __global__ void many_vector_dot_product(double *base, double **vectors,
     for (int i = index; i < total; i += stride) {
         int block = i / n;
         int vi = i % n;
-        temp[block] += vectors[block][vi] * base[vi];
+        temp[i] = vectors[block][vi] * base[vi];
+    }
+
+    __syncthreads();
+
+    // Perform the reduction
+    if (index < num_vectors) {
+        int    start = index * n;
+        int    end = start + n;
+        double res = 0;
+        for (int i = start; i < end; i++) {
+            res += temp[i];
+        }
+        result[index] = res;
     }
 }
 
