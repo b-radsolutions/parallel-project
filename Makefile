@@ -1,16 +1,26 @@
 
 CC=mpicxx
+CFLAGS=-std=c++11 -Wall -Wextra -I. -O3
+ODIR=obj
 
-run.out:
+DEPS = gram-schmidt.hpp matrix-operations.hpp mpi-helper.hpp orthogonality-test.hpp
+_OBJS = main.o modified-gram-schmidt.o gram-schmidt.o orthogonality-test.o mpi-helper.o serial-linalg.o
+OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
+
+OUTPUT=run.out
+
+$(OUTPUT): $(OBJS) cuda-gram-schmidt.o
+	$(CC) cuda-gram-schmidt.o $(OBJS) \
+	-o $(OUTPUT) -L/usr/local/cuda-11.2/lib64/ -lcudadevrt -lcudart -lstdc++
+
+$(ODIR):
+	mkdir -p $(ODIR)
+
+$(ODIR)/%.o: %.cpp $(DEPS)
+	$(CC) -g -c -o $@ $< $(CFLAGS)
+
+cuda-gram-schmidt.o: cuda-gram-schmidt.cu
 	nvcc -g -G cuda-gram-schmidt.cu -c -o cuda-gram-schmidt.o
-	$(CC) -g -c modified-gram-schmidt.cpp -o modified-gram-schmidt.o
-	$(CC) -g -c gram-schmidt.cpp -o gram-schmidt.o
-	$(CC) -g -c orthogonality-test.cpp -o orthogonality-test.o 
-	$(CC) -g -c mpi-helper.cpp -o mpi-helper.o
-	$(CC) -g -c serial-linalg.cpp -o serial-linalg.o
-	$(CC) -std=c++11 -g -c main.cpp -o main.o
-	$(CC) cuda-gram-schmidt.o modified-gram-schmidt.o orthogonality-test.o main.o gram-schmidt.o mpi-helper.o serial-linalg.o \
-	-o run.out -L/usr/local/cuda-11.2/lib64/ -lcudadevrt -lcudart -lstdc++
 
 .PHONY: test
 test: test.out
@@ -21,6 +31,12 @@ test.out: test.cu cuda-gram-schmidt.cu
 
 scream: scream_matrix.cpp ./tools/read_matrix_serial.cpp
 	g++ -O3 scream_matrix.cpp ./tools/read_matrix_serial.cpp -o scream
+
+.PHONY: clean 
+clean:
+	rm -f $(OBJS)
+	rm ./$(OUTPUT)
+	rm -rf ./*.dSYM
 
 ortho:
 	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho
