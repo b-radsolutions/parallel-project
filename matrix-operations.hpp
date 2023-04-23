@@ -6,7 +6,9 @@
 
 extern "C" {
 void     normalize(double *src, double *dst, size_t n);
+void     distributedNormalize(double *src, double *dst, size_t n);
 void     projection(double *vector, double *base, double *result, size_t n);
+void     distributedProjection(double *vector, double *base, double *result, size_t n);
 void     subtract(double *a, double *b, double *dst, size_t n);
 void     cudaSetup();
 void     cudaCleanup();

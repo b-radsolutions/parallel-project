@@ -187,28 +187,35 @@ int main(int argc, char *argv[]) {
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n";
-                // cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
-                //  << sizes[i] << "\n";
+                cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
+                     << sizes[i] << "\n";
             }
-            // start = clock_now();
 
-            // // TODO THINGS TO TIME
-            // double **output_matrix2 = input_matrix;
-            // end = clock_now();
-            // if (world_rank == MASTER) {
-            //     cout << "DONE in " << (end - start) << " cycles ("
-            //          << (end - start) / clock_frequency << " secs)\n";
-            // }
+            start = clock_now();
+            parallel_gram_schmidt(A, m, n, Q);
+            end = clock_now();
 
-            // start = clock_now();
-            // out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-            //                types[j] + ".mtx";
-            // write_partial_matrix(output_matrix2, n, out_filename);
-            // end = clock_now();
-            // if (world_rank == MASTER) {
-            //     cout << "WROTE TO FILE in " << (end - start) << " cycles ("
-            //          << (end - start) / clock_frequency << " secs)\n\n";
-            // }
+            if (world_rank == MASTER) {
+                cout << "DONE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n";
+            }
+
+            // Move the matrix from the device back to the host
+            deviceQ = matrixDeviceToHost(Q, n, m);
+
+            start = clock_now();
+            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+                           types[j] + ".mtx";
+            write_partial_matrix(deviceQ, n, out_filename);
+            end = clock_now();
+            if (world_rank == MASTER) {
+                cout << "WROTE TO FILE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n\n";
+            }
+
+            for (size_t i = 0; i < n; i++)
+                free(deviceQ[i]);
+            free(deviceQ);
         }
         if (world_rank == MASTER)
             cout << "\n";
