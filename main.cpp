@@ -14,9 +14,7 @@
 #ifndef BRAD
 #include "clockcycle.h"
 #else
-int clock_now(){
-    return 0;
-}
+int clock_now() { return 0; }
 #endif
 
 #define MASTER 0
@@ -123,7 +121,6 @@ int main(int argc, char *argv[]) {
 
                 // Delete A
                 cleanupMatrix(A, n);
-
             }
             cout << "\n";
         }
@@ -182,24 +179,24 @@ int main(int argc, char *argv[]) {
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
             double **B;
-            if (MASTER == world_rank){
+            if (MASTER == world_rank) {
                 B = (double **)malloc(sizeof(double *) * n);
             }
             for (int k = 0; k < n; ++k) {
                 double *current = (double *)malloc(sizeof(double) * rows_in);
                 for (int l = 0; l < rows_in; ++l) {
                     current[l] = deviceQ[l][k];
-
                 }
                 double *tmp;
-                if (world_rank == MASTER){
+                if (world_rank == MASTER) {
                     B[k] = (double *)malloc(sizeof(double) * n);
                     tmp = B[k];
                 }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
+                           MPI_COMM_WORLD);
                 free(current);
             }
-            if (MASTER == world_rank){
+            if (MASTER == world_rank) {
                 write_matrix_to_file_serial(B, n, out_filename);
                 for (int k = 0; k < n; ++k) {
                     free(B[k]);
@@ -207,9 +204,9 @@ int main(int argc, char *argv[]) {
                 free(B);
             }
 
-            MPI_Barrier(MPI_COMM_WORLD);
-            //write_partial_matrix(deviceQ, n, first_row, m, out_filename);
+            // write_partial_matrix(deviceQ, n, first_row, m, out_filename);
             end = clock_now();
+            MPI_Barrier(MPI_COMM_WORLD);
 
             for (size_t i = 0; i < m; i++)
                 free(deviceQ[i]);
@@ -238,24 +235,24 @@ int main(int argc, char *argv[]) {
             out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
                            types[j] + ".mtx";
 
-            if (MASTER == world_rank){
+            if (MASTER == world_rank) {
                 B = (double **)malloc(sizeof(double *) * n);
             }
             for (int k = 0; k < n; ++k) {
                 double *current = (double *)malloc(sizeof(double) * rows_in);
                 for (int l = 0; l < rows_in; ++l) {
                     current[l] = deviceQ[l][k];
-
                 }
                 double *tmp;
-                if (world_rank == MASTER){
+                if (world_rank == MASTER) {
                     B[k] = (double *)malloc(sizeof(double) * n);
                     tmp = B[k];
                 }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
+                           MPI_COMM_WORLD);
                 free(current);
             }
-            if (MASTER == world_rank){
+            if (MASTER == world_rank) {
                 write_matrix_to_file_serial(B, n, out_filename);
                 for (int k = 0; k < n; ++k) {
                     free(B[k]);
@@ -286,4 +283,3 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
-
