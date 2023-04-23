@@ -201,6 +201,12 @@ double **allocateMatrix(size_t n) {
     return ret;
 }
 
+double *allocateVector(size_t n) {
+    double *ret;
+    cudaMalloc(&ret, sizeof(double) * n);
+    return ret;
+}
+
 double **matrixDeviceToHost(double **A, size_t n, size_t m) {
     double *tmp, **ret = (double **)malloc(sizeof(double *) * m);
     for (size_t i = 0; i < m; i++) {
