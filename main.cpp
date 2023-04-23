@@ -11,10 +11,17 @@
 #include "tools/read_matrix_mpi.cpp"
 #include "tools/read_matrix_serial.cpp"
 
+#ifndef BRAD
 #include "clockcycle.h"
+#else
+int clock_now() { return 0; }
+#endif
 
 #define MASTER 0
 #define clock_frequency 512000000.0
+
+#define NUM_SIZES 8
+#define NUM_MATRIX_VARAINTS 4
 
 using namespace std;
 
@@ -36,15 +43,15 @@ int main(int argc, char *argv[]) {
 
     // Cuda setup must happen after MPI is initialized so all MPI
     // ranks create the helper structures locally.
-    cudaSetup();
+    cudaSetup(world_rank);
 
     int         sizes[8] = {4, 16, 32, 64, 128, 256, 512, 1024};
     std::string types[4] = {"dense", "sparse", "well-conditioned", "ill-conditioned"};
     if (world_rank == MASTER) {
         printf("MPI Rank 0: ------Running Serial------\n");
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < NUM_SIZES; i++) {
             int n = sizes[i];
-            for (int j = 0; j < 4; j++) {
+            for (int j = 0; j < NUM_MATRIX_VARAINTS; j++) {
                 string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
                 cout << "GOING TO Matrix " << in_filename << "\t" << n << " by " << n
                      << "in Serial\n ";
@@ -64,7 +71,7 @@ int main(int argc, char *argv[]) {
                 double **Q = allocateMatrix(n);
 
                 start = clock_now();
-                serial_modified_gram_schmidt(input_matrix, n, n, Q);
+                serial_modified_gram_schmidt(A, n, n, Q);
                 end = clock_now();
 
                 cout << "DONE in " << (end - start) << " cycles ("
@@ -114,8 +121,6 @@ int main(int argc, char *argv[]) {
 
                 // Delete A
                 cleanupMatrix(A, n);
-
-                // todo:: delete `input_matrix`
             }
             cout << "\n";
         }
@@ -123,71 +128,155 @@ int main(int argc, char *argv[]) {
 
     // MPI portion
 
-    // MPI_Barrier(MPI_COMM_WORLD);
-    // printf("\n\n------Running Parallel------\n\n");
-    // for (int i = 0; i < 8; i++) {
-    //     int n = sizes[i];
-    //     int rows_in = n / world_size;
-    //     int first_row = rows_in * world_rank;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (world_rank == MASTER)
+        printf("\n\n------Running Parallel------\n\n");
 
-    //     for (int j = 0; j < 4; j++) {
-    //         string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
-    //         if (world_rank == MASTER) {
-    //             cout << "MPI Rank " << world_rank << ": READING Matrix " << in_filename
-    //                  << "\t" << n << " by " << n << " in Parallel\n";
-    //         }
-    //         start = clock_now();
-    //         double **input_matrix =
-    //             read_partial_matrix(n, first_row, rows_in, in_filename);
-    //         end = clock_now();
-    //         cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
-    //              << " cycles (" << (end - start) / clock_frequency << " secs)\n";
+    for (int i = 0; i < NUM_SIZES; i++) {
+        size_t n = sizes[i];
+        int    rows_in = n / world_size;
+        int    first_row = rows_in * world_rank;
 
-    //         if (world_rank == MASTER) {
-    //             cout << "RUNNING Parallel Modified Gram-Schmidt\t" << types[j] << "\t"
-    //                  << sizes[i] << "\n";
-    //         }
-    //         start = clock_now();
+        size_t m = rows_in;
 
-    //         double **output_matrix1 = input_matrix;
-    //         end = clock_now();
-    //         if (world_rank == MASTER) {
-    //             cout << "DONE in " << (end - start) << " cycles ("
-    //                  << (end - start) / clock_frequency << " secs)\n";
-    //         }
-    //         // TODO THINGS TO TIME
-    //         start = clock_now();
-    //         string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
-    //                               to_string(n) + types[j] + ".mtx";
-    //         // write_partial_matrix(output_matrix1, n, out_filename);
-    //         end = clock_now();
-    //         if (world_rank == MASTER) {
-    //             cout << "WROTE TO FILE in " << (end - start) << " cycles ("
-    //                  << (end - start) / clock_frequency << " secs)\n";
-    //             cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
-    //                  << sizes[i] << "\n";
-    //         }
-    //         start = clock_now();
-    //         // TODO THINGS TO TIME
-    //         double **output_matrix2 = input_matrix;
-    //         end = clock_now();
-    //         if (world_rank == MASTER) {
-    //             cout << "DONE in " << (end - start) << " cycles ("
-    //                  << (end - start) / clock_frequency << " secs)\n";
-    //         }
-    //         start = clock_now();
-    //         out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-    //                        types[j] + ".mtx";
-    //         // write_partial_matrix(output_matrix2, n, out_filename);
-    //         end = clock_now();
-    //         if (world_rank == MASTER) {
-    //             cout << "WROTE TO FILE in " << (end - start) << " cycles ("
-    //                  << (end - start) / clock_frequency << " secs)\n\n";
-    //         }
-    //     }
-    //     cout << "\n";
-    // }
+        for (int j = 0; j < NUM_MATRIX_VARAINTS; j++) {
+            string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
+            if (world_rank == MASTER) {
+                cout << "MPI Rank " << world_rank << ": READING Matrix " << in_filename
+                     << "\t" << n << " by " << n << " in Parallel\n";
+            }
+            start = clock_now();
+            double **input_matrix = read_partial_matrix(n, first_row, m, in_filename);
+            end = clock_now();
 
+            if (world_rank == MASTER)
+                cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
+                     << " cycles (" << (end - start) / clock_frequency << " secs)\n";
+
+            // Need to move this matrix into the device
+            double **A = matrixHostToDevice(input_matrix, n, m);
+            // Also need to initialize the result matrix Q
+            double **Q = allocateMNMatrix(n, m);
+
+            if (world_rank == MASTER) {
+                cout << "RUNNING Parallel Modified Gram-Schmidt\t" << types[j] << "\t"
+                     << sizes[i] << "\n";
+            }
+
+            start = clock_now();
+            parallel_modified_gram_schmidt(A, m, n, Q);
+            end = clock_now();
+
+            if (world_rank == MASTER) {
+                cout << "DONE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n";
+            }
+
+            // Move the matrix from the device back to the host
+            double **deviceQ = matrixDeviceToHost(Q, n, m);
+
+            start = clock_now();
+            string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
+                                  to_string(n) + types[j] + ".mtx";
+            double **B;
+            if (MASTER == world_rank) {
+                B = (double **)malloc(sizeof(double *) * n);
+            }
+            for (int k = 0; k < n; ++k) {
+                double *current = (double *)malloc(sizeof(double) * rows_in);
+                for (int l = 0; l < rows_in; ++l) {
+                    current[l] = deviceQ[l][k];
+                }
+                double *tmp;
+                if (world_rank == MASTER) {
+                    B[k] = (double *)malloc(sizeof(double) * n);
+                    tmp = B[k];
+                }
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
+                           MPI_COMM_WORLD);
+                free(current);
+            }
+            if (MASTER == world_rank) {
+                write_matrix_to_file_serial(B, n, out_filename);
+                for (int k = 0; k < n; ++k) {
+                    free(B[k]);
+                }
+                free(B);
+            }
+
+            // write_partial_matrix(deviceQ, n, first_row, m, out_filename);
+            end = clock_now();
+            MPI_Barrier(MPI_COMM_WORLD);
+
+            for (size_t i = 0; i < m; i++)
+                free(deviceQ[i]);
+            free(deviceQ);
+
+            if (world_rank == MASTER) {
+                cout << "WROTE TO FILE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n";
+                cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
+                     << sizes[i] << "\n";
+            }
+
+            start = clock_now();
+            parallel_gram_schmidt(A, m, n, Q);
+            end = clock_now();
+
+            if (world_rank == MASTER) {
+                cout << "DONE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n";
+            }
+
+            // Move the matrix from the device back to the host
+            deviceQ = matrixDeviceToHost(Q, n, m);
+
+            start = clock_now();
+            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+                           types[j] + ".mtx";
+
+            if (MASTER == world_rank) {
+                B = (double **)malloc(sizeof(double *) * n);
+            }
+            for (int k = 0; k < n; ++k) {
+                double *current = (double *)malloc(sizeof(double) * rows_in);
+                for (int l = 0; l < rows_in; ++l) {
+                    current[l] = deviceQ[l][k];
+                }
+                double *tmp;
+                if (world_rank == MASTER) {
+                    B[k] = (double *)malloc(sizeof(double) * n);
+                    tmp = B[k];
+                }
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
+                           MPI_COMM_WORLD);
+                free(current);
+            }
+            if (MASTER == world_rank) {
+                write_matrix_to_file_serial(B, n, out_filename);
+                for (int k = 0; k < n; ++k) {
+                    free(B[k]);
+                }
+                free(B);
+            }
+
+            end = clock_now();
+            MPI_Barrier(MPI_COMM_WORLD);
+
+            if (world_rank == MASTER) {
+                cout << "WROTE TO FILE in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n\n";
+            }
+
+            for (size_t i = 0; i < m; i++)
+                free(deviceQ[i]);
+            free(deviceQ);
+        }
+        if (world_rank == MASTER)
+            cout << "\n";
+    }
+
+    MPI_Barrier(MPI_COMM_WORLD);
     // Free memory
     MPI_Finalize();
 

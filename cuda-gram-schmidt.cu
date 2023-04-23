@@ -6,7 +6,8 @@
 
 #include "math.h"
 #include <cstdlib>
-
+#include <stdio.h>
+#include <iostream>
 #include "mpi-helper.hpp"
 
 #define calc1dIndex blockIdx.x *blockDim.x + threadIdx.x
@@ -147,10 +148,21 @@ __global__ void many_vector_dot_product(double *base, double **vectors,
 double *magnitude;
 double *host_magnitude;
 
-void cudaSetup() {
+void cudaSetup(size_t myrank) {
     // Set up memory to hold the result of dot product
     cudaMalloc(&magnitude, sizeof(double));
     host_magnitude = (double *)malloc(sizeof(double));
+
+    int cE; // Cuda Error
+    int cudaDeviceCount;
+    if ((cE = cudaGetDeviceCount(&cudaDeviceCount)) != cudaSuccess) {
+        std::cout << " Unable to determine cuda device count, error is "<< cE <<", count is "<< cudaDeviceCount <<"\n";
+        exit(-1);
+    }
+    if ((cE = cudaSetDevice(myrank % cudaDeviceCount)) != cudaSuccess) {
+        std::cout << " Unable to have rank "<< myrank <<" set to cuda device "<< (myrank % cudaDeviceCount) <<", error is "<< cE <<" \n";
+        exit(-1);
+    }
 }
 
 void cudaCleanup() { cudaFree(magnitude); }
@@ -195,6 +207,19 @@ double **allocateMatrix(size_t n) {
     // ret will be created on the CPU so it can reference the device pointers
     ret = (double **)malloc(sizeof(double *) * n);
     for (size_t i = 0; i < n; i++) {
+        // Transfer local copy onto the device
+        cudaMalloc(&tmp, sizeof(double) * n);
+        // Set the row
+        ret[i] = tmp;
+    }
+    return ret;
+}
+
+double **allocateMNMatrix(size_t n, size_t m) {
+    double **ret, *tmp;
+    // ret will be created on the CPU so it can reference the device pointers
+    ret = (double **)malloc(sizeof(double *) * m);
+    for (size_t i = 0; i < m; i++) {
         // Transfer local copy onto the device
         cudaMalloc(&tmp, sizeof(double) * n);
         // Set the row

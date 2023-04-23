@@ -5,13 +5,15 @@
 #include <assert.h>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include <dirent.h>
 #include "matrix-operations.hpp"
 #include "orthogonality-test.hpp"
 #include "tools/read_matrix_serial.hpp"
 #define fold "./out/"
 
-void calculateError(std::string filename) {
+void calculateError(std::string filename)
+{
     char str1[100] = "";
     strcat(str1, fold);
     strcat(str1, filename.c_str());
