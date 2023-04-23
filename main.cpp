@@ -260,8 +260,9 @@ int main(int argc, char *argv[]) {
                 free(B);
             }
 
-            MPI_Barrier(MPI_COMM_WORLD);
             end = clock_now();
+            MPI_Barrier(MPI_COMM_WORLD);
+
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n\n";
