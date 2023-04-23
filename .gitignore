@@ -1,0 +1,6 @@
+.DS_Store
+tools/gen/*.mtx
+.vscode/
+scream
+/data
+tools/*.out

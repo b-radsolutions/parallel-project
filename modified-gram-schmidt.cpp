@@ -9,7 +9,7 @@
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
 // each), orthonormalize the matrix A and put the result in the pre-allocated Q.
-void modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
+void serial_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
     // Copy over A into the output Q
     matrixCopy(A, Q, m, n);
 
@@ -29,6 +29,21 @@ void modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
         normalize(Q[i + 1], Q[i + 1], n);
     }
     free(tmp);
+}
+
+void parallel_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
+    // Copy over A into the output Q
+    matrixCopy(A, Q, m, n);
+
+    // Our first vector is already done
+    normalize(Q[0], Q[0], n);
+
+    for (size_t i = 0; i < m - 1; i++) {
+        // Perform the 1-op projection/subtraction on remaining vectors
+        performModifiedGramSchmidtReduction(A, m, n, i);
+        // Normalize the vector we just completed
+        normalize(Q[i + 1], Q[i + 1], n);
+    }
 }
 
 int main() {
