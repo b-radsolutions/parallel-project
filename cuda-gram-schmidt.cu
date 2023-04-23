@@ -201,6 +201,15 @@ double **allocateMatrix(size_t n) {
     return ret;
 }
 
+double **matrixDeviceToHost(double **A, size_t n, size_t m) {
+    double *tmp, **ret = (double **)malloc(sizeof(double *) * m);
+    for (size_t i = 0; i < m; i++) {
+        tmp = (double *)malloc(sizeof(double) * n);
+        cudaMemcpy(tmp, A[i], n * sizeof(double), cudaMemcpyDeviceToHost);
+    }
+    return ret;
+}
+
 void matrixCopy(double **A, double **B, size_t m, size_t n) {
     for (size_t i = 0; i < m; i++) {
         cudaMemcpy(B[i], A[i], n * sizeof(double), cudaMemcpyDeviceToDevice);
