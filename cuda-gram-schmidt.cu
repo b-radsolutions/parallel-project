@@ -7,7 +7,7 @@
 #include "math.h"
 #include <cstdlib>
 #include <stdio.h>
-
+#include <iostream>
 #include "mpi-helper.hpp"
 
 #define calc1dIndex blockIdx.x *blockDim.x + threadIdx.x
@@ -156,13 +156,11 @@ void cudaSetup(size_t myrank) {
     int cE; // Cuda Error
     int cudaDeviceCount;
     if ((cE = cudaGetDeviceCount(&cudaDeviceCount)) != cudaSuccess) {
-        printf(" Unable to determine cuda device count, error is %d, count is %d\n", cE,
-               cudaDeviceCount);
+        std::cout << " Unable to determine cuda device count, error is "<< cE <<", count is "<< cudaDeviceCount <<"\n";
         exit(-1);
     }
     if ((cE = cudaSetDevice(myrank % cudaDeviceCount)) != cudaSuccess) {
-        printf(" Unable to have rank %d set to cuda device %d, error is %d \n", myrank,
-               (myrank % cudaDeviceCount), cE);
+        std::cout << " Unable to have rank "<< myrank <<" set to cuda device "<< (myrank % cudaDeviceCount) <<", error is "<< cE <<" \n";
         exit(-1);
     }
 }

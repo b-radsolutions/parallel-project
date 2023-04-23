@@ -124,7 +124,6 @@ int main(int argc, char *argv[]) {
                 // Delete A
                 cleanupMatrix(A, n);
 
-                // todo:: delete `input_matrix`
             }
             cout << "\n";
         }
@@ -179,11 +178,9 @@ int main(int argc, char *argv[]) {
             // Move the matrix from the device back to the host
             double **deviceQ = matrixDeviceToHost(Q, n, m);
 
-            // TODO THINGS TO TIME
             start = clock_now();
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
-            //TODO WRITE
             double **B;
             if (MASTER == world_rank){
                 B = (double **)malloc(sizeof(double *) * n);
@@ -191,13 +188,15 @@ int main(int argc, char *argv[]) {
             for (int k = 0; k < n; ++k) {
                 double *current = (double *)malloc(sizeof(double) * rows_in);
                 for (int l = 0; l < rows_in; ++l) {
-                    current[k] = deviceQ[l][k];
+                    current[l] = deviceQ[l][k];
 
                 }
+                double *tmp;
                 if (world_rank == MASTER){
                     B[k] = (double *)malloc(sizeof(double) * n);
+                    tmp = B[k];
                 }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, B[k], rows_in, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
                 free(current);
             }
             if (MASTER == world_rank){
@@ -207,6 +206,8 @@ int main(int argc, char *argv[]) {
                 }
                 free(B);
             }
+
+            MPI_Barrier(MPI_COMM_WORLD);
             //write_partial_matrix(deviceQ, n, first_row, m, out_filename);
             end = clock_now();
 
@@ -243,13 +244,15 @@ int main(int argc, char *argv[]) {
             for (int k = 0; k < n; ++k) {
                 double *current = (double *)malloc(sizeof(double) * rows_in);
                 for (int l = 0; l < rows_in; ++l) {
-                    current[k] = deviceQ[l][k];
+                    current[l] = deviceQ[l][k];
 
                 }
+                double *tmp;
                 if (world_rank == MASTER){
                     B[k] = (double *)malloc(sizeof(double) * n);
+                    tmp = B[k];
                 }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, B[k], rows_in, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
                 free(current);
             }
             if (MASTER == world_rank){
@@ -259,6 +262,8 @@ int main(int argc, char *argv[]) {
                 }
                 free(B);
             }
+
+            MPI_Barrier(MPI_COMM_WORLD);
             end = clock_now();
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
@@ -281,3 +286,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
