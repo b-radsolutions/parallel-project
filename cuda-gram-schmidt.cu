@@ -213,6 +213,7 @@ double distributedDotProduct(double *a, double *b, size_t n) {
     vector_dot_product<<<1, n, sizeof(double) * n>>>(n, a, b, magnitude);
     cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
     my_MPIReduce(host_magnitude, 1, &res);
+    return res;
 }
 
 void distributedNormalize(double *src, double *dst, size_t n) {
