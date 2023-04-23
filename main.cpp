@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
                 start = clock_now();
                 string out_filename = "out/ModifiedSerial" + to_string(n) + "by" +
                                       to_string(n) + types[j] + ".mtx";
-                write_matrix_to_file_serial(Q, n, out_filename);
+                write_matrix_to_file_serial(deviceQ, n, out_filename);
                 end = clock_now();
                 cout << "WROTE TO FILE in " << (end - start) << "cycles("
                      << (end - start) / clock_frequency << " secs)\n ";
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
                 start = clock_now();
                 out_filename = "out/ClassicSerial" + to_string(n) + "by" + to_string(n) +
                                types[j] + ".mtx";
-                write_matrix_to_file_serial(Q, n, out_filename);
+                write_matrix_to_file_serial(deviceQ, n, out_filename);
                 end = clock_now();
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n\n";
