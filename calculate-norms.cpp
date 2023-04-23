@@ -18,34 +18,35 @@ void calculateError(std::string filename) {
     std::ifstream file(str1, std::ios::in | std::ios::binary);
     size_t m;
     file.read((char *)(&m), sizeof(size_t));
-
+    //printf("%s \n", filename.c_str());
     double **Q, **E;
     double frob_norm, one_norm, inf_norm;
-
+    char bad = '.';
+    if((filename.c_str())[0] == bad) {
+        return;
+    }
     Q = read_matrix(str1, m);
     E = orthoError(m, m, Q);
     frob_norm = frobeniusNorm(m, m, E);
     one_norm = oneNorm(m, m, E);
     inf_norm = infNorm(m, m, E);
-    printf("%lu %lf %lf %lf %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
+    printf("%lu, %lf, %lf, %lf, %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
 }
 
 int main(int argc, char* argv[]) {
-
-     DIR* dir = opendir(fold);
-    if (dir == NULL)
+    std::string filename = argv[1];
+    std::ifstream input_file(filename);
+    if (!input_file)
     {
-        std::cerr << "Error: Could not open directory" << std::endl;
+        std::cerr << "Error: Could not open file \"" << filename << "\"" << std::endl;
+        return 1;
     }
-
-    //printf("Size Frobenius One Inf\n");
-    struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL)
+    std::string line;
+    while (std::getline(input_file, line))
     {
-        if (entry->d_type == DT_REG)
-        {
-            calculateError(entry->d_name);
-        }
+        calculateError(line);
     }
-    closedir(dir);
+    input_file.close();
+    return 0;
+
 }
