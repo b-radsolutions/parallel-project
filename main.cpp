@@ -54,46 +54,68 @@ int main(int argc, char *argv[]) {
                 cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
                      << " cycles (" << (end - start) / clock_frequency << " secs)\n";
 
-                cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t"
-                     << sizes[i] << "\n";
+                // Need to move the matrix to the device...
+                double **A = matrixHostToDevice(input_matrix, n, n);
+
+                cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t" << n
+                     << "\n";
 
                 // Preallocate output
-                double **Q = allocateMatrix(sizes[i]);
+                double **Q = allocateMatrix(n);
 
                 start = clock_now();
-                serial_modified_gram_schmidt(input_matrix, sizes[i], sizes[i], Q);
+                serial_modified_gram_schmidt(input_matrix, n, n, Q);
                 end = clock_now();
-
-                // Matrix Q is a device matrix and needs to be moved
 
                 cout << "DONE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n";
+
+                // Matrix Q is a device matrix and needs to be moved
+                double **deviceQ = matrixDeviceToHost(Q, n, n);
 
                 start = clock_now();
                 string out_filename = "out/ModifiedSerial" + to_string(n) + "by" +
                                       to_string(n) + types[j] + ".mtx";
-                write_matrix_to_file_serial(Q, n, out_filename);
+                write_matrix_to_file_serial(deviceQ, n, out_filename);
                 end = clock_now();
                 cout << "WROTE TO FILE in " << (end - start) << "cycles("
                      << (end - start) / clock_frequency << " secs)\n ";
 
-                cout << "RUNNING Serial Classic Gram-Schmidt\t" << types[j] << "\t"
-                     << sizes[i] << "\n";
+                // Delete host copy of Q.
+                for (size_t i = 0; i < n; i++)
+                    free(deviceQ[i]);
+                free(deviceQ);
+
+                cout << "RUNNING Serial Classic Gram-Schmidt\t" << types[j] << "\t" << n
+                     << "\n";
 
                 start = clock_now();
-                normal_gram_schmidt(input_matrix, sizes[i], sizes[i], Q);
+                normal_gram_schmidt(A, n, n, Q);
                 end = clock_now();
 
                 cout << "DONE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n";
 
+                // Matrix Q is (still) a device matrix and needs to be moved
+                deviceQ = matrixDeviceToHost(Q, n, n);
+
                 start = clock_now();
                 out_filename = "out/ClassicSerial" + to_string(n) + "by" + to_string(n) +
                                types[j] + ".mtx";
-                write_matrix_to_file_serial(Q, n, out_filename);
+                write_matrix_to_file_serial(deviceQ, n, out_filename);
                 end = clock_now();
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n\n";
+
+                // Delete host copy of Q for classic GS.
+                for (size_t i = 0; i < n; i++)
+                    free(deviceQ[i]);
+                free(deviceQ);
+
+                // Delete A
+                cleanupMatrix(A, n);
+
+                // todo:: delete `input_matrix`
             }
             cout << "\n";
         }

@@ -11,7 +11,7 @@ void normal_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
     normalize(Q[0], Q[0], n);
 
     // Create a temporary vector
-    double *tmp; // todo:: allocate tmp
+    double *tmp = allocateVector(n);
 
     // For every vector after the first...
     for (size_t i = 1; i < m; i++) {
@@ -21,8 +21,7 @@ void normal_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
             subtract(Q[i], tmp, Q[i], n);
         }
         // Finally, normalize that vector.
-        normalize(Q[i + 1], Q[i + 1], n);
+        normalize(Q[i], Q[i], n);
     }
-
-    // todo:: cleanup tmp
+    cleanupVector(tmp);
 }
