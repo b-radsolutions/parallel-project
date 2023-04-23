@@ -14,6 +14,9 @@ generate-all: generate.out
 	./generate.out ../data/dense/256.mtx 256 1
 	./generate.out ../data/dense/512.mtx 512 1
 	./generate.out ../data/dense/1024.mtx 1024 1
+	./generate.out ../data/dense/2048.mtx 2048 1
+	./generate.out ../data/dense/4096.mtx 4096 1
+	./generate.out ../data/dense/8192.mtx 8192 1
 
 	mkdir -p ../data/sparse
 	./generate.out ../data/sparse/4.mtx 4 2
@@ -24,6 +27,9 @@ generate-all: generate.out
 	./generate.out ../data/sparse/256.mtx 256 2
 	./generate.out ../data/sparse/512.mtx 512 2
 	./generate.out ../data/sparse/1024.mtx 1024 2
+	./generate.out ../data/sparse/2048.mtx 2048 2
+	./generate.out ../data/sparse/4096.mtx 4096 2
+	./generate.out ../data/sparse/4096.mtx 8192 2
 
 	mkdir -p ../data/well-conditioned
 	./generate.out ../data/well-conditioned/4.mtx 4 3
@@ -34,6 +40,9 @@ generate-all: generate.out
 	./generate.out ../data/well-conditioned/256.mtx 256 3
 	./generate.out ../data/well-conditioned/512.mtx 512 3
 	./generate.out ../data/well-conditioned/1024.mtx 1024 3
+	./generate.out ../data/well-conditioned/2048.mtx 2048 3
+	./generate.out ../data/well-conditioned/4096.mtx 4096 3
+	./generate.out ../data/well-conditioned/8192.mtx 8192 3
 
 	mkdir -p ../data/ill-conditioned
 	./generate.out ../data/ill-conditioned/4.mtx 4 4
@@ -44,6 +53,9 @@ generate-all: generate.out
 	./generate.out ../data/ill-conditioned/256.mtx 256 4
 	./generate.out ../data/ill-conditioned/512.mtx 512 4
 	./generate.out ../data/ill-conditioned/1024.mtx 1024 4
+	./generate.out ../data/ill-conditioned/2048.mtx 2048 4
+	./generate.out ../data/ill-conditioned/4096.mtx 4096 4
+	./generate.out ../data/ill-conditioned/8192.mtx 8192 4
 	
 .PHONY: clean
 clean:
