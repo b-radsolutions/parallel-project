@@ -11,6 +11,7 @@ void     subtract(double *a, double *b, double *dst, size_t n);
 void     cudaSetup();
 void     cudaCleanup();
 void     cleanupMatrix(double **A, size_t m);
+void     cleanupVector(double *vec);
 double **createTestMatrix(size_t n);
 double **allocateMatrix(size_t n);
 double  *allocateVector(size_t n);

@@ -28,7 +28,7 @@ void serial_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
         // Normalize the vector we just completed
         normalize(Q[i + 1], Q[i + 1], n);
     }
-    free(tmp);
+    cleanupVector(tmp);
 }
 
 void parallel_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {

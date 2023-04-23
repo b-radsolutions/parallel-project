@@ -161,6 +161,8 @@ void cleanupMatrix(double **A, size_t m) {
     free(A);
 }
 
+void cleanupVector(double *vec) { cudaFree(vec); }
+
 // Create 'n' random columns of 'n' entries
 double **createTestMatrix(size_t n) {
     double **ret, *tmp, *local;
