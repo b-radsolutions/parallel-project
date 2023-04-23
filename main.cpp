@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
             write_partial_matrix(deviceQ, n, out_filename);
             end = clock_now();
 
-            for (size_t i = 0; i < n; i++)
+            for (size_t i = 0; i < m; i++)
                 free(deviceQ[i]);
             free(deviceQ);
 
@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
                      << (end - start) / clock_frequency << " secs)\n\n";
             }
 
-            for (size_t i = 0; i < n; i++)
+            for (size_t i = 0; i < m; i++)
                 free(deviceQ[i]);
             free(deviceQ);
         }

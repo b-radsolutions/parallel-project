@@ -6,6 +6,7 @@
 
 #include "math.h"
 #include <cstdlib>
+#include <stdio.h>
 
 #include "mpi-helper.hpp"
 
