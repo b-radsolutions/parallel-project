@@ -54,6 +54,9 @@ int main(int argc, char *argv[]) {
                 cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
                      << " cycles (" << (end - start) / clock_frequency << " secs)\n";
 
+                // Need to move the matrix to the device...
+                double **A = matrixHostToDevice(input_matrix, n, n);
+
                 cout << "RUNNING Serial Modified Gram-Schmidt\t" << types[j] << "\t" << n
                      << "\n";
 
@@ -87,7 +90,7 @@ int main(int argc, char *argv[]) {
                      << "\n";
 
                 start = clock_now();
-                normal_gram_schmidt(input_matrix, n, n, Q);
+                normal_gram_schmidt(A, n, n, Q);
                 end = clock_now();
 
                 cout << "DONE in " << (end - start) << " cycles ("
@@ -108,6 +111,11 @@ int main(int argc, char *argv[]) {
                 for (size_t i = 0; i < n; i++)
                     free(deviceQ[i]);
                 free(deviceQ);
+
+                // Delete A
+                cleanupMatrix(A, n);
+
+                // todo:: delete `input_matrix`
             }
             cout << "\n";
         }

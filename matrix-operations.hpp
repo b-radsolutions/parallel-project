@@ -15,6 +15,7 @@ double **createTestMatrix(size_t n);
 double **allocateMatrix(size_t n);
 double  *allocateVector(size_t n);
 double **matrixDeviceToHost(double **A, size_t n, size_t m);
+double **matrixHostToDevice(double **A, size_t n, size_t m);
 void     matrixCopy(double **A, double **B, size_t m, size_t n);
 double   dot(double *a, double *b, size_t n);
 void     performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,

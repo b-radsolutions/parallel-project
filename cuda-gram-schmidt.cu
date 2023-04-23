@@ -216,6 +216,20 @@ double **matrixDeviceToHost(double **A, size_t n, size_t m) {
     return ret;
 }
 
+double **matrixHostToDevice(double **A, size_t n, size_t m) {
+    double **ret, *tmp;
+    ret = (double **)malloc(sizeof(double *) * m);
+    for (size_t i = 0; i < m; i++) {
+        // Transfer local copy onto the device
+        cudaMalloc(&tmp, sizeof(double) * n);
+        // Copy the memory over
+        cudaMemcpy(tmp, A[i], n * sizeof(double), cudaMemcpyHostToDevice);
+        // Set the row
+        ret[i] = tmp;
+    }
+    return ret;
+}
+
 void matrixCopy(double **A, double **B, size_t m, size_t n) {
     for (size_t i = 0; i < m; i++) {
         cudaMemcpy(B[i], A[i], n * sizeof(double), cudaMemcpyDeviceToDevice);
