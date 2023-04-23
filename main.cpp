@@ -183,7 +183,31 @@ int main(int argc, char *argv[]) {
             start = clock_now();
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
-            write_partial_matrix(deviceQ, n, first_row, m, out_filename);
+            //TODO WRITE
+            double **B;
+            if (MASTER == world_rank){
+                B = (double **)malloc(sizeof(double *) * n);
+            }
+            for (int k = 0; k < n; ++k) {
+                double *current = (double *)malloc(sizeof(double) * rows_in);
+                for (int l = 0; l < rows_in; ++l) {
+                    current[k] = deviceQ[l][k];
+
+                }
+                if (world_rank == MASTER){
+                    B[k] = (double *)malloc(sizeof(double) * n);
+                }
+                MPI_Gather(current, rows_in, MPI_DOUBLE, B[k], rows_in, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                free(current);
+            }
+            if (MASTER == world_rank){
+                write_matrix_to_file_serial(B, n, out_filename);
+                for (int k = 0; k < n; ++k) {
+                    free(B[k]);
+                }
+                free(B);
+            }
+            //write_partial_matrix(deviceQ, n, first_row, m, out_filename);
             end = clock_now();
 
             for (size_t i = 0; i < m; i++)
@@ -212,7 +236,29 @@ int main(int argc, char *argv[]) {
             start = clock_now();
             out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
                            types[j] + ".mtx";
-            write_partial_matrix(deviceQ, n, first_row, m, out_filename);
+
+            if (MASTER == world_rank){
+                B = (double **)malloc(sizeof(double *) * n);
+            }
+            for (int k = 0; k < n; ++k) {
+                double *current = (double *)malloc(sizeof(double) * rows_in);
+                for (int l = 0; l < rows_in; ++l) {
+                    current[k] = deviceQ[l][k];
+
+                }
+                if (world_rank == MASTER){
+                    B[k] = (double *)malloc(sizeof(double) * n);
+                }
+                MPI_Gather(current, rows_in, MPI_DOUBLE, B[k], rows_in, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                free(current);
+            }
+            if (MASTER == world_rank){
+                write_matrix_to_file_serial(B, n, out_filename);
+                for (int k = 0; k < n; ++k) {
+                    free(B[k]);
+                }
+                free(B);
+            }
             end = clock_now();
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
