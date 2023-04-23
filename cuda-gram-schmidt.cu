@@ -147,10 +147,23 @@ __global__ void many_vector_dot_product(double *base, double **vectors,
 double *magnitude;
 double *host_magnitude;
 
-void cudaSetup() {
+void cudaSetup(size_t myrank) {
     // Set up memory to hold the result of dot product
     cudaMalloc(&magnitude, sizeof(double));
     host_magnitude = (double *)malloc(sizeof(double));
+
+    nt  cE; // Cuda Error
+    int cudaDeviceCount;
+    if ((cE = cudaGetDeviceCount(&cudaDeviceCount)) != cudaSuccess) {
+        printf(" Unable to determine cuda device count, error is %d, count is %d\n", cE,
+               cudaDeviceCount);
+        exit(-1);
+    }
+    if ((cE = cudaSetDevice(myrank % cudaDeviceCount)) != cudaSuccess) {
+        printf(" Unable to have rank %d set to cuda device %d, error is %d \n", myrank,
+               (myrank % cudaDeviceCount), cE);
+        exit(-1);
+    }
 }
 
 void cudaCleanup() { cudaFree(magnitude); }
