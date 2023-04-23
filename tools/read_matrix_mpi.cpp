@@ -33,7 +33,7 @@ double ** read_partial_matrix(size_t n, size_t first_row, size_t num_rows, const
     MPI_File_close( &fp );
     return A;
 }
-/*
+
 int write_partial_matrix(double ** A, size_t n, size_t first_row, size_t num_rows, const std::string& filename){
     MPI_File fp;
     int rc = MPI_File_open(MPI_COMM_WORLD, filename.c_str(), MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fp);
@@ -41,12 +41,14 @@ int write_partial_matrix(double ** A, size_t n, size_t first_row, size_t num_row
         std::cerr << "Failed to open file " << filename << "\n";
         return 1;
     }
-    MPI_Offset = 0;
+    MPI_Offset offset = 0;
     MPI_Status status;
     MPI_File_seek(fp, sizeof(size_t) + (sizeof(double)*first_row*n), MPI_SEEK_SET);
     for (int i = 0; i < num_rows; ++i) {
-        MPI_File_write(fp, A[i], n, MPI_DOUBLE, MPI_Status *status)
+        MPI_File_write(fp, A[i], n, MPI_DOUBLE, &status);
     }
+
+    MPI_File_close( &fp );
+
     return 0;
 }
-*/
