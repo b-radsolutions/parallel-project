@@ -262,7 +262,7 @@ void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
     size_t   remainder_count = m - (completed_index + 1);
     double **remainder = (A + completed_index + 1);
     size_t   coefficient_size = sizeof(double) * remainder_count;
-    double  *dots, *host_dots, coeffs;
+    double  *dots, *host_dots, *coeffs;
     cudaMalloc(&dots, coefficient_size);
     host_dots = (double *)malloc(coefficient_size);
     coeffs = (double *)malloc(coefficient_size);

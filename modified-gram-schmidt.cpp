@@ -55,9 +55,9 @@ int main() {
     const size_t n = 10;
     double     **A, **Q, **E;
     A = createTestMatrix(n);
-    printf("Matrix A (%dx%d) successfully generated\n", n, n);
+    printf("Matrix A (%zux%zu) successfully generated\n", n, n);
     Q = allocateMatrix(n);
-    printf("Matrix Q (%dx%d) successfully initialized\n", n, n);
+    printf("Matrix Q (%zux%zu) successfully initialized\n", n, n);
 
     // Run the procedure
     modified_gram_schmidt(A, n, n, Q);
