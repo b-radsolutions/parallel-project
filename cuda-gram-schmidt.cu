@@ -214,6 +214,7 @@ double **matrixDeviceToHost(double **A, size_t n, size_t m) {
     for (size_t i = 0; i < m; i++) {
         tmp = (double *)malloc(sizeof(double) * n);
         cudaMemcpy(tmp, A[i], n * sizeof(double), cudaMemcpyDeviceToHost);
+        ret[i] = tmp;
     }
     return ret;
 }
