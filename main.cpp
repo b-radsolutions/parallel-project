@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
                 double **Q = allocateMatrix(n);
 
                 start = clock_now();
-                serial_modified_gram_schmidt(input_matrix, n, n, Q);
+                serial_modified_gram_schmidt(A, n, n, Q);
                 end = clock_now();
 
                 cout << "DONE in " << (end - start) << " cycles ("
@@ -151,47 +151,64 @@ int main(int argc, char *argv[]) {
                 cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
                      << " cycles (" << (end - start) / clock_frequency << " secs)\n";
 
+            // Need to move this matrix into the device
+            double **A = matrixHostToDevice(input_matrix, n, m);
+            // Also need to initialize the result matrix Q
+            double **Q = allocateMNMatrix(n, m);
+
             if (world_rank == MASTER) {
                 cout << "RUNNING Parallel Modified Gram-Schmidt\t" << types[j] << "\t"
                      << sizes[i] << "\n";
             }
-            start = clock_now();
 
-            double **output_matrix1 = input_matrix;
+            start = clock_now();
+            parallel_modified_gram_schmidt(A, m, n, Q);
             end = clock_now();
+
             if (world_rank == MASTER) {
                 cout << "DONE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n";
             }
+
+            // Move the matrix from the device back to the host
+            double **deviceQ = matrixDeviceToHost(Q, n, m);
+
             // TODO THINGS TO TIME
             start = clock_now();
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
-            // write_partial_matrix(output_matrix1, n, out_filename);
+            write_partial_matrix(deviceQ, n, out_filename);
             end = clock_now();
+
+            for (size_t i = 0; i < n; i++)
+                free(deviceQ[i]);
+            free(deviceQ);
+
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
                      << (end - start) / clock_frequency << " secs)\n";
-                cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
-                     << sizes[i] << "\n";
+                // cout << "RUNNING Parallel Classic Gram-Schmidt\t" << types[j] << "\t"
+                //  << sizes[i] << "\n";
             }
-            start = clock_now();
-            // TODO THINGS TO TIME
-            double **output_matrix2 = input_matrix;
-            end = clock_now();
-            if (world_rank == MASTER) {
-                cout << "DONE in " << (end - start) << " cycles ("
-                     << (end - start) / clock_frequency << " secs)\n";
-            }
-            start = clock_now();
-            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-                           types[j] + ".mtx";
+            // start = clock_now();
+
+            // // TODO THINGS TO TIME
+            // double **output_matrix2 = input_matrix;
+            // end = clock_now();
+            // if (world_rank == MASTER) {
+            //     cout << "DONE in " << (end - start) << " cycles ("
+            //          << (end - start) / clock_frequency << " secs)\n";
+            // }
+
+            // start = clock_now();
+            // out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+            //                types[j] + ".mtx";
             // write_partial_matrix(output_matrix2, n, out_filename);
-            end = clock_now();
-            if (world_rank == MASTER) {
-                cout << "WROTE TO FILE in " << (end - start) << " cycles ("
-                     << (end - start) / clock_frequency << " secs)\n\n";
-            }
+            // end = clock_now();
+            // if (world_rank == MASTER) {
+            //     cout << "WROTE TO FILE in " << (end - start) << " cycles ("
+            //          << (end - start) / clock_frequency << " secs)\n\n";
+            // }
         }
         if (world_rank == MASTER)
             cout << "\n";

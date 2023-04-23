@@ -14,6 +14,7 @@ void     cleanupMatrix(double **A, size_t m);
 void     cleanupVector(double *vec);
 double **createTestMatrix(size_t n);
 double **allocateMatrix(size_t n);
+double **allocateMNMatrix(size_t n, size_t m);
 double  *allocateVector(size_t n);
 double **matrixDeviceToHost(double **A, size_t n, size_t m);
 double **matrixHostToDevice(double **A, size_t n, size_t m);

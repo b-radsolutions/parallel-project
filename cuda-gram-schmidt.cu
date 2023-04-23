@@ -203,6 +203,19 @@ double **allocateMatrix(size_t n) {
     return ret;
 }
 
+double **allocateMNMatrix(size_t n, size_t m) {
+    double **ret, *tmp;
+    // ret will be created on the CPU so it can reference the device pointers
+    ret = (double **)malloc(sizeof(double *) * m);
+    for (size_t i = 0; i < m; i++) {
+        // Transfer local copy onto the device
+        cudaMalloc(&tmp, sizeof(double) * n);
+        // Set the row
+        ret[i] = tmp;
+    }
+    return ret;
+}
+
 double *allocateVector(size_t n) {
     double *ret;
     cudaMalloc(&ret, sizeof(double) * n);
