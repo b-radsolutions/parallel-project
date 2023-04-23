@@ -5,13 +5,15 @@
 #include <assert.h>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include <dirent.h>
 #include "matrix-operations.hpp"
 #include "orthogonality-test.hpp"
 #include "tools/read_matrix_serial.hpp"
 #define fold "./out/"
 
-void calculateError(std::string filename) {
+void calculateError(std::string filename)
+{
     char str1[100] = "";
     strcat(str1, fold);
     strcat(str1, filename.c_str());
@@ -30,16 +32,17 @@ void calculateError(std::string filename) {
     printf("%lu %lf %lf %lf %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
 
-     DIR* dir = opendir(fold);
+    DIR *dir = opendir(fold);
     if (dir == NULL)
     {
         std::cerr << "Error: Could not open directory" << std::endl;
     }
 
-    //printf("Size Frobenius One Inf\n");
-    struct dirent* entry;
+    // printf("Size Frobenius One Inf\n");
+    struct dirent *entry;
     while ((entry = readdir(dir)) != NULL)
     {
         if (entry->d_type == DT_REG)
