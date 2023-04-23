@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
-    else if (type == 3)
+    else if (type == 4)
     {
         printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
@@ -108,11 +108,11 @@ int main(int argc, char *argv[])
         {
             if (x < n / 2)
             {
-                A[x][x] = (double)rand() / RAND_MAX * 0.99 + 0.01; // Small values
+                A[x][x] = (double)rand() / RAND_MAX * 0.00099 + 0.000001; // Small values
             }
             else
             {
-                A[x][x] = (double)rand() / RAND_MAX * 99 + 1; // Large values
+                A[x][x] = (double)rand() / RAND_MAX * 99999 + 1; // Large values
             }
         }
 
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
             {
                 if (x != y)
                 {
-                    A[x][y] = (double)rand() / RAND_MAX * 0.99 + 0.01; // Small values
+                    A[x][y] = (double)rand() / RAND_MAX * 0.00099 + 0.00001; // Small values
                 }
             }
         }
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
         write_matrix_to_file_serial(A, n, filename);
         printf("Wrote matrix to file.\n");
     }
-    else if (type == 4)
+    else if (type == 3)
     {
         printf("Generating matrix '%s' with size %lux%lu\n", filename.c_str(), n, n);
 
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    A[x][y] -= 0.01; // Subtract a small constant from non-diagonal entries
+                    A[x][y] -= 0.00001; // Subtract a small constant from non-diagonal entries
                 }
             }
         }
