@@ -16,7 +16,7 @@ $(OUTPUT): $(OBJS) cuda-gram-schmidt.o
 $(ODIR):
 	mkdir -p $(ODIR)
 
-$(ODIR)/%.o: %.cpp $(DEPS)
+$(ODIR)/%.o: %.cpp $(DEPS) $(ODIR)
 	$(CC) -g -c -o $@ $< $(CFLAGS)
 
 cuda-gram-schmidt.o: cuda-gram-schmidt.cu
