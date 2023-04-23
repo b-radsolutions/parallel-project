@@ -207,6 +207,25 @@ void matrixCopy(double **A, double **B, size_t m, size_t n) {
     }
 }
 
+// Returns the reduced result of the dot product operation
+double distributedDotProduct(double *a, double *b, size_t n) {
+    double res;
+    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, a, b, magnitude);
+    cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
+    my_MPIReduce(host_magnitude, 1, &res);
+}
+
+void distributedNormalize(double *src, double *dst, size_t n) {
+    double dot = distributedDotProduct(src, src, n);
+    cudaMemcpy(magnitude, &dot, sizeof(double), cudaMemcpyHostToDevice);
+    // Need to copy the src into the dst before we divide if different.
+    if (src != dst) {
+        cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+    }
+    // Divide happens here.
+    vector_normalize<<<1, n>>>(n, dst, magnitude);
+}
+
 void normalize(double *src, double *dst, size_t n) {
     // Find the value to divide by
     vector_dot_product<<<1, n, sizeof(double) * n>>>(n, src, src, magnitude);
@@ -214,13 +233,21 @@ void normalize(double *src, double *dst, size_t n) {
         // Need to copy the src into the dst before we divide
         cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
-    // Need to take the result out of device memory to reduce it
-    cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
-    double res;
-    my_MPIReduce(host_magnitude, 1, &res);
-    cudaMemcpy(magnitude, &res, sizeof(double), cudaMemcpyHostToDevice);
     // Divide happens here
     vector_normalize<<<1, n>>>(n, dst, magnitude);
+}
+
+void distributedProjection(double *vector, double *base, double *result, size_t n) {
+    // We assume the base to have magnitude 1, saving us from this division.
+    // But we do need to find the numerator.
+    double dot = distributedDotProduct(vector, base, n);
+    if (base != result) {
+        // Need to copy the base to the result before we multiply, as it happens in-place.
+        cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+    }
+    cudaMemcpy(magnitude, &dot, sizeof(double), cudaMemcpyHostToDevice);
+    // Now, we can multiply the base by this magnitude
+    vector_mult<<<1, n>>>(n, result, magnitude);
 }
 
 // Requires the base to have magnitude 1 (to avoid an extra dot product)
@@ -232,11 +259,6 @@ void projection(double *vector, double *base, double *result, size_t n) {
         // Need to copy the base to the result before we multiply, as it happens in-place.
         cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
-    // Need to take the result out of device memory to reduce it
-    cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
-    double res;
-    my_MPIReduce(host_magnitude, 1, &res);
-    cudaMemcpy(magnitude, &res, sizeof(double), cudaMemcpyHostToDevice);
     // Now, we can multiply the base by this magnitude
     vector_mult<<<1, n>>>(n, result, magnitude);
 }
