@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "matrix-operations.hpp"
+#include "orthogonality-test.hpp"
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
 // each), orthonormalize the matrix A and put the result in the pre-allocated Q.
@@ -45,28 +46,43 @@ void parallel_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) 
     }
 }
 
-// int main() {
-//     cudaSetup();
-//     printf("cudaSetup() complete\n");
+int main() {
+    cudaSetup();
+    printf("cudaSetup() complete\n");
 
-//     // Create the matrix to use.
-//     srand(0);
-//     const size_t n = 10;
-//     double     **A, **Q;
-//     A = createTestMatrix(n);
-//     printf("Matrix A (%dx%d) successfully generated\n", n, n);
-//     Q = allocateMatrix(n);
-//     printf("Matrix Q (%dx%d) successfully initialized\n", n, n);
+    // Create the matrix to use.
+    srand(0);
+    const size_t n = 10;
+    double     **A, **Q, **E;
+    A = createTestMatrix(n);
+    printf("Matrix A (%dx%d) successfully generated\n", n, n);
+    Q = allocateMatrix(n);
+    printf("Matrix Q (%dx%d) successfully initialized\n", n, n);
 
-//     // Run the procedure
-//     modified_gram_schmidt(A, n, n, Q);
-//     printf("Modified gram schmidt complete\n", n, n);
+    // Run the procedure
+    modified_gram_schmidt(A, n, n, Q);
+    printf("Modified gram schmidt complete\n", n, n);
 
-//     // Cleanup
-//     cleanupMatrix(A, n);
-//     printf("cleanupMatrix(A) complete\n");
-//     cleanupMatrix(Q, n);
-//     printf("cleanupMatrix(Q) complete\n");
-//     cudaCleanup();
-//     printf("cudaCleanup() complete\n");
-// }
+    // Test Gram-Schmidt accuracy
+    E = orthoError(n, n, Q);
+
+    // Frobenius Norm
+    double frob = frobeniusNorm(n, n, E);
+    printf("Frobenius norm = %f\n", frob);
+
+    // a, b norms
+    double inf_norm = infNorm(n, n, E);
+    printf("inf norm = %f\n", inf_norm);
+    double one_norm = oneNorm(n, n, E);
+    printf("one norm = %f\n", one_norm);
+
+    // Cleanup
+    cleanupMatrix(A, n);
+    printf("cleanupMatrix(A) complete\n");
+    cleanupMatrix(Q, n);
+    printf("cleanupMatrix(Q) complete\n");
+    cleanupMatrix(E, n);
+    printf("cleanupMatrix(E) complete\n");
+    cudaCleanup();
+    printf("cudaCleanup() complete\n");
+}
