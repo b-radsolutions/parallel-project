@@ -7,8 +7,9 @@ run.out:
 	$(CC) -g -c gram-schmidt.cpp -o gram-schmidt.o
 	$(CC) -g -c orthogonality-test.cpp -o orthogonality-test.o 
 	$(CC) -g -c mpi-helper.cpp -o mpi-helper.o
+	$(CC) -g -c serial-linalg.cpp -o serial-linalg.o
 	$(CC) -std=c++11 -g -c main.cpp -o main.o
-	$(CC) cuda-gram-schmidt.o modified-gram-schmidt.o orthogonality-test.o main.o gram-schmidt.o mpi-helper.o \
+	$(CC) cuda-gram-schmidt.o modified-gram-schmidt.o orthogonality-test.o main.o gram-schmidt.o mpi-helper.o serial-linalg.o \
 	-o run.out -L/usr/local/cuda-11.2/lib64/ -lcudadevrt -lcudart -lstdc++
 
 .PHONY: test
