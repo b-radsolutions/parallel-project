@@ -10,7 +10,7 @@ void print_matrix(double **A, size_t n) {
     printf("A (%lux%lu) = \n", n, n);
     for (int x = 0; x < n; x++) {
         for (int y = 0; y < n; y++) {
-            printf("%.4f", A[x][y]);
+            printf("%.16f", A[x][y]);
             if (y < n - 1)
                 printf("\t");
         }

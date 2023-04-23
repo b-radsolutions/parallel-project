@@ -4,3 +4,5 @@ tools/gen/*.mtx
 scream
 /data
 tools/*.out
+/out
+ortho

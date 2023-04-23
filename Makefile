@@ -21,3 +21,8 @@ test.out: test.cu cuda-gram-schmidt.cu
 
 scream: scream_matrix.cpp ./tools/read_matrix_serial.cpp
 	g++ -O3 scream_matrix.cpp ./tools/read_matrix_serial.cpp -o scream
+
+ortho:
+	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho
+	./ortho
+	

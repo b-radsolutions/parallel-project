@@ -18,7 +18,7 @@ double **orthoError(size_t m, size_t n, double **Q) {
     double   tmp;
     for (size_t i = 0; i < m; i++) {
         for (size_t j = i; j < m; j++) {
-            tmp = dot(Q[i], Q[j], n);
+            tmp = serial_dot(Q[i], Q[j], n);
             E[i][j] = tmp;
             // Subtract the identity
             if (i == j) {
@@ -58,7 +58,7 @@ double infNorm(size_t m, size_t n, double **E) {
         double max_dot = 0.0;
         for (size_t j = 0; j < n; j++) {
             if (i != j) {
-                tmp = dot(E[j], E[i], n);
+                tmp = serial_dot(E[j], E[i], n);
                 if (tmp > max_dot) {
                     max_dot = tmp;
                 }
@@ -80,7 +80,7 @@ double oneNorm(size_t m, size_t n, double **E) {
         double total = 0.0;
         for (size_t j = 0; j < n; j++) {
             if (i != j) {
-                tmp = dot(E[j], E[i], n);
+                tmp = serial_dot(E[j], E[i], n);
                 total += tmp * tmp;
             }
         }
@@ -99,7 +99,7 @@ double oneNorm(size_t m, size_t n, double **E) {
 //         double max_dot = 0.0;
 //         for(size_t j = 0; j < m; j++) {
 //             if(i != j) {
-//                 dot(Q[j], Q[i], tmp, n);
+//                serial_dot(Q[j], Q[i], tmp, n);
 //                 total += *tmp;
 //                 if(tmp > max_dot){
 //                     max_dot = *tmp;
