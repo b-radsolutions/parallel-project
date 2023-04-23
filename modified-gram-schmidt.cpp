@@ -17,7 +17,7 @@ void serial_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
     normalize(Q[0], Q[0], n);
 
     // I think this line is wrong; should be done on GPU
-    double *tmp = (double *)malloc(sizeof(double) * n);
+    double *tmp = allocateVector(n);
 
     for (size_t i = 0; i < m - 1; i++) {
         // Subtract the projection of the previously-completed vector from the remaining
@@ -28,7 +28,7 @@ void serial_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
         // Normalize the vector we just completed
         normalize(Q[i + 1], Q[i + 1], n);
     }
-    free(tmp);
+    cleanupVector(tmp);
 }
 
 void parallel_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
