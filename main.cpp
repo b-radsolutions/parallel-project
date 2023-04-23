@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
             start = clock_now();
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
-            write_partial_matrix(deviceQ, n, out_filename);
+            write_partial_matrix(deviceQ, n, first_row, m, out_filename);
             end = clock_now();
 
             for (size_t i = 0; i < m; i++)
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
             start = clock_now();
             out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
                            types[j] + ".mtx";
-            write_partial_matrix(deviceQ, n, out_filename);
+            write_partial_matrix(deviceQ, n, first_row, m, out_filename);
             end = clock_now();
             if (world_rank == MASTER) {
                 cout << "WROTE TO FILE in " << (end - start) << " cycles ("
