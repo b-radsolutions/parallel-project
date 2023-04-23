@@ -152,7 +152,7 @@ void cudaSetup(size_t myrank) {
     cudaMalloc(&magnitude, sizeof(double));
     host_magnitude = (double *)malloc(sizeof(double));
 
-    nt  cE; // Cuda Error
+    int cE; // Cuda Error
     int cudaDeviceCount;
     if ((cE = cudaGetDeviceCount(&cudaDeviceCount)) != cudaSuccess) {
         printf(" Unable to determine cuda device count, error is %d, count is %d\n", cE,

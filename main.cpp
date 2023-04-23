@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
     // Cuda setup must happen after MPI is initialized so all MPI
     // ranks create the helper structures locally.
-    cudaSetup();
+    cudaSetup(world_rank);
 
     int         sizes[8] = {4, 16, 32, 64, 128, 256, 512, 1024};
     std::string types[4] = {"dense", "sparse", "well-conditioned", "ill-conditioned"};
