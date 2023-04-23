@@ -29,7 +29,7 @@ generate-all: generate.out
 	./generate.out ../data/sparse/1024.mtx 1024 2
 	./generate.out ../data/sparse/2048.mtx 2048 2
 	./generate.out ../data/sparse/4096.mtx 4096 2
-	./generate.out ../data/sparse/4096.mtx 8192 2
+	./generate.out ../data/sparse/8192.mtx 8192 2
 
 	mkdir -p ../data/well-conditioned
 	./generate.out ../data/well-conditioned/4.mtx 4 3
