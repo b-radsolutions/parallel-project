@@ -2,6 +2,8 @@
 // CUDA CODE FOR MODIFIED GRAM SCHMIDT
 //
 
+#include "matrix-operations.hpp"
+
 #include "math.h"
 #include <cstdlib>
 

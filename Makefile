@@ -1,8 +1,15 @@
 
+CC=mpicxx
+
 run.out:
 	nvcc -g -G cuda-gram-schmidt.cu -c -o cuda-gram-schmidt.o
-	g++ -g modified-gram-schmidt.cpp -o modified-gram-schmidt.o
-	g++ cuda-gram-schmidt.o modified-gram-schmidt.o -o run.out -L/usr/local/cuda-11.2/lib64/ -lcudadevrt -lcudart -lstdc++
+	$(CC) -g -c modified-gram-schmidt.cpp -o modified-gram-schmidt.o
+	$(CC) -g -c gram-schmidt.cpp -o gram-schmidt.o
+	$(CC) -g -c orthogonality-test.cpp -o orthogonality-test.o 
+	$(CC) -g -c mpi-helper.cpp -o mpi-helper.o
+	$(CC) -std=c++11 -g -c main.cpp -o main.o
+	$(CC) cuda-gram-schmidt.o modified-gram-schmidt.o orthogonality-test.o main.o gram-schmidt.o mpi-helper.o \
+	-o run.out -L/usr/local/cuda-11.2/lib64/ -lcudadevrt -lcudart -lstdc++
 
 .PHONY: test
 test: test.out

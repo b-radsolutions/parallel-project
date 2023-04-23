@@ -46,43 +46,43 @@ void parallel_modified_gram_schmidt(double **A, size_t m, size_t n, double **Q) 
     }
 }
 
-int main() {
-    cudaSetup();
-    printf("cudaSetup() complete\n");
+// int main() {
+//     cudaSetup();
+//     printf("cudaSetup() complete\n");
 
-    // Create the matrix to use.
-    srand(0);
-    const size_t n = 10;
-    double     **A, **Q, **E;
-    A = createTestMatrix(n);
-    printf("Matrix A (%zux%zu) successfully generated\n", n, n);
-    Q = allocateMatrix(n);
-    printf("Matrix Q (%zux%zu) successfully initialized\n", n, n);
+//     // Create the matrix to use.
+//     srand(0);
+//     const size_t n = 10;
+//     double     **A, **Q, **E;
+//     A = createTestMatrix(n);
+//     printf("Matrix A (%zux%zu) successfully generated\n", n, n);
+//     Q = allocateMatrix(n);
+//     printf("Matrix Q (%zux%zu) successfully initialized\n", n, n);
 
-    // Run the procedure
-    modified_gram_schmidt(A, n, n, Q);
-    printf("Modified gram schmidt complete\n", n, n);
+//     // Run the procedure
+//     modified_gram_schmidt(A, n, n, Q);
+//     printf("Modified gram schmidt complete\n", n, n);
 
-    // Test Gram-Schmidt accuracy
-    E = orthoError(n, n, Q);
+//     // Test Gram-Schmidt accuracy
+//     E = orthoError(n, n, Q);
 
-    // Frobenius Norm
-    double frob = frobeniusNorm(n, n, E);
-    printf("Frobenius norm = %f\n", frob);
+//     // Frobenius Norm
+//     double frob = frobeniusNorm(n, n, E);
+//     printf("Frobenius norm = %f\n", frob);
 
-    // a, b norms
-    double inf_norm = infNorm(n, n, E);
-    printf("inf norm = %f\n", inf_norm);
-    double one_norm = oneNorm(n, n, E);
-    printf("one norm = %f\n", one_norm);
+//     // a, b norms
+//     double inf_norm = infNorm(n, n, E);
+//     printf("inf norm = %f\n", inf_norm);
+//     double one_norm = oneNorm(n, n, E);
+//     printf("one norm = %f\n", one_norm);
 
-    // Cleanup
-    cleanupMatrix(A, n);
-    printf("cleanupMatrix(A) complete\n");
-    cleanupMatrix(Q, n);
-    printf("cleanupMatrix(Q) complete\n");
-    cleanupMatrix(E, n);
-    printf("cleanupMatrix(E) complete\n");
-    cudaCleanup();
-    printf("cudaCleanup() complete\n");
-}
+//     // Cleanup
+//     cleanupMatrix(A, n);
+//     printf("cleanupMatrix(A) complete\n");
+//     cleanupMatrix(Q, n);
+//     printf("cleanupMatrix(Q) complete\n");
+//     cleanupMatrix(E, n);
+//     printf("cleanupMatrix(E) complete\n");
+//     cudaCleanup();
+//     printf("cudaCleanup() complete\n");
+// }
