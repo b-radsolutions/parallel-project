@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "orthogonality-test.hpp"
 #include "matrix-operations.hpp"
+#include "orthogonality-test.hpp"
 
 // For an m x n matrix A (A[m][n] is the bottom right entry, A has m columns with n rows
 // each), orthonormalize the matrix A and put the result in the pre-allocated Q.
@@ -48,18 +48,18 @@ int main() {
     modified_gram_schmidt(A, n, n, Q);
     printf("Modified gram schmidt complete\n", n, n);
 
-    //Test Gram-Schmidt accuracy
-    E = orthoError(n, n, Q);   
+    // Test Gram-Schmidt accuracy
+    E = orthoError(n, n, Q);
 
-    //Frobenius Norm
+    // Frobenius Norm
     double frob = frobeniusNorm(n, n, E);
-    printf("Frobenius norm = %f", frob);
+    printf("Frobenius norm = %f\n", frob);
 
-    //a, b norms
+    // a, b norms
     double inf_norm = infNorm(n, n, E);
-    printf("inf norm = %f", inf_norm);
+    printf("inf norm = %f\n", inf_norm);
     double one_norm = oneNorm(n, n, E);
-    printf("one norm = %f", one_norm);
+    printf("one norm = %f\n", one_norm);
 
     // Cleanup
     cleanupMatrix(A, n);
