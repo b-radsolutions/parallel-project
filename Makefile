@@ -4,7 +4,7 @@ CFLAGS=-std=c++11 -Wall -Wextra -I. -O3
 ODIR=obj
 
 DEPS = gram-schmidt.hpp matrix-operations.hpp mpi-helper.hpp orthogonality-test.hpp
-_OBJS = main.o modified-gram-schmidt.o gram-schmidt.o orthogonality-test.o mpi-helper.o
+_OBJS = main.o modified-gram-schmidt.o gram-schmidt.o orthogonality-test.o mpi-helper.o serial-linalg.o
 OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
 
 OUTPUT=run.out
