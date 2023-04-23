@@ -193,7 +193,7 @@ void subtract(double *a, double *b, double *dst, size_t n) {
 
 double dot(double *a, double *b, size_t n) {
     // Take the dot product
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, vector, base, magnitude);
+    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, a, b, magnitude);
     // Need to take the result out of device memory
     cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
     return *host_magnitude;
