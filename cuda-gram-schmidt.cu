@@ -5,6 +5,8 @@
 #include "math.h"
 #include <cstdlib>
 
+#include "mpi-helper.hpp"
+
 #define calc1dIndex blockIdx.x *blockDim.x + threadIdx.x
 
 /*
@@ -210,6 +212,11 @@ void normalize(double *src, double *dst, size_t n) {
         // Need to copy the src into the dst before we divide
         cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
+    // Need to take the result out of device memory to reduce it
+    cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
+    double res;
+    my_MPIReduce(host_magnitude, 1, &res);
+    cudaMemcpy(magnitude, &res, sizeof(double), cudaMemcpyHostToDevice);
     // Divide happens here
     vector_normalize<<<1, n>>>(n, dst, magnitude);
 }
@@ -223,6 +230,11 @@ void projection(double *vector, double *base, double *result, size_t n) {
         // Need to copy the base to the result before we multiply, as it happens in-place.
         cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
     }
+    // Need to take the result out of device memory to reduce it
+    cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
+    double res;
+    my_MPIReduce(host_magnitude, 1, &res);
+    cudaMemcpy(magnitude, &res, sizeof(double), cudaMemcpyHostToDevice);
     // Now, we can multiply the base by this magnitude
     vector_mult<<<1, n>>>(n, result, magnitude);
 }
@@ -240,6 +252,7 @@ double dot(double *a, double *b, size_t n) {
     // Need to take the result out of device memory
     cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
     return *host_magnitude;
+}
 
 // Removes the projection of the completed index from every vector afterwards. A
 // has `m` columns and `n` rows.
@@ -249,14 +262,18 @@ void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
     size_t   remainder_count = m - (completed_index + 1);
     double **remainder = (A + completed_index + 1);
     size_t   coefficient_size = sizeof(double) * remainder_count;
-    double  *dots;
+    double  *dots, *host_dots, coeffs;
     cudaMalloc(&dots, coefficient_size);
-    // many_vector_projection_subtractions<<<1, n>>>(base, remainder, remainder_count, n);
-    // Do all of the dot products
+    host_dots = (double *)malloc(coefficient_size);
+    coeffs = (double *)malloc(coefficient_size);
+    // many_vector_projection_subtractions<<<1, n>>>(base, remainder, remainder_count,
+    // n); Do all of the dot products
     many_vector_dot_product<<<1, n, coefficient_size>>>(base, remainder, remainder_count,
                                                         n, dots);
     // Communicate with the other MPI ranks to discover the complete dot product
-    // todo:: incorporate MPI
+    cudaMemcpy(host_dots, dots, coefficient_size, cudaMemcpyDeviceToHost);
+    my_MPIReduce(host_dots, remainder_count, coeffs);
+    cudaMemcpy(dots, coeffs, coefficient_size, cudaMemcpyHostToDevice);
     // Use that dot product to do vector subtractions
     many_vector_subtractions<<<1, n>>>(base, remainder, dots, remainder_count, n);
     cudaFree(dots);
