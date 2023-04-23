@@ -21,7 +21,7 @@ void normal_gram_schmidt(double **A, size_t m, size_t n, double **Q) {
             subtract(Q[i], tmp, Q[i], n);
         }
         // Finally, normalize that vector.
-        normalize(Q[i + 1], Q[i + 1], n);
+        normalize(Q[i], Q[i], n);
     }
     cleanupVector(tmp);
 }
