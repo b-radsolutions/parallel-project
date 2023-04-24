@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
     if (world_rank == MASTER)
         printf("\n\n------Running Parallel------\n\n");
 
-    for (int i = 0; i < NUM_SIZES; i++) {
+    const int start_size_index = 3;
+    for (int i = start_size_index; i < NUM_SIZES; i++) {
         size_t n = sizes[i];
         int    rows_in = n / world_size;
         int    first_row = rows_in * world_rank;
@@ -149,33 +150,37 @@ int main(int argc, char *argv[]) {
             deviceQ = matrixDeviceToHost(Q, n, m);
 
             start = clock_now();
-            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-                           types[j] + ".mtx";
 
-            if (MASTER == world_rank) {
-                B = (double **)malloc(sizeof(double *) * n);
-            }
-            for (int k = 0; k < n; ++k) {
-                double *current = (double *)malloc(sizeof(double) * rows_in);
-                for (int l = 0; l < rows_in; ++l) {
-                    current[l] = deviceQ[l][k];
-                }
-                double *tmp;
-                if (world_rank == MASTER) {
-                    B[k] = (double *)malloc(sizeof(double) * n);
-                    tmp = B[k];
-                }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
-                           MPI_COMM_WORLD);
-                free(current);
-            }
-            if (MASTER == world_rank) {
-                write_matrix_to_file_serial(B, n, out_filename);
-                for (int k = 0; k < n; ++k) {
-                    free(B[k]);
-                }
-                free(B);
-            }
+            // Every rank will save their own file.
+            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+                           types[j] + "part" + to_string(world_rank) + ".mtx";
+            write_partial_matrix_to_file_serial(deviceQ, rows_in, n, out_filename);
+
+            // if (MASTER == world_rank) {
+            //     B = (double **)malloc(sizeof(double *) * n);
+            // }
+            // for (int k = 0; k < n; ++k) {
+            //     double *current = (double *)malloc(sizeof(double) * rows_in);
+            //     for (int l = 0; l < rows_in; ++l) {
+            //         current[l] = deviceQ[l][k];
+            //     }
+            //     double *tmp;
+            //     if (world_rank == MASTER) {
+            //         B[k] = (double *)malloc(sizeof(double) * n);
+            //         tmp = B[k];
+            //     }
+            //     MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE,
+            //     MASTER,
+            //                MPI_COMM_WORLD);
+            //     free(current);
+            // }
+            // if (MASTER == world_rank) {
+            //     write_matrix_to_file_serial(B, n, out_filename);
+            //     for (int k = 0; k < n; ++k) {
+            //         free(B[k]);
+            //     }
+            //     free(B);
+            // }
 
             end = clock_now();
             MPI_Barrier(MPI_COMM_WORLD);
