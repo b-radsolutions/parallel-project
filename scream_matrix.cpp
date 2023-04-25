@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <string>
 
-double **read_matrix(const std::string& filename, size_t n);
+#include "tools/read_matrix_serial.hpp"
 
 // Don't use this...
-void print_matrix(double **A, size_t n) {
+void print_matrix(double **A, size_t m, size_t n) {
     printf("A (%lux%lu) = \n", n, n);
-    for (int x = 0; x < n; x++) {
+    for (int x = 0; x < m; x++) {
         for (int y = 0; y < n; y++) {
             printf("%.16f", A[x][y]);
             if (y < n - 1)
@@ -18,12 +18,21 @@ void print_matrix(double **A, size_t n) {
     }
 }
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        printf("Usage: %s [matrix file] [N]\n", argv[0]);
+    if (argc != 3 && argc != 4) {
+        printf("Usage: %s [matrix file] (M) [N]\n", argv[0]);
         return 1;
     }
-    size_t   n = atol(argv[2]);
-    double **A = read_matrix(argv[1], n);
+    double **A;
+    size_t   m, n;
+    if (argc == 4) {
+        m = atol(argv[2]);
+        n = atol(argv[3]);
+        A = read_partial_matrix(argv[1], m, n);
+    } else {
+        n = atol(argv[2]);
+        m = n;
+        A = read_matrix(argv[1], n);
+    }
     if (A)
-        print_matrix(A, n);
+        print_matrix(A, m, n);
 }

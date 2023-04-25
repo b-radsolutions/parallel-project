@@ -50,12 +50,13 @@ int main(int argc, char *argv[]) {
     if (world_rank == MASTER)
         printf("\n\n------Running Parallel------\n\n");
 
-    for (int i = 0; i < NUM_SIZES; i++) {
-        size_t n = sizes[i];
-        int    rows_in = n / world_size;
+    const int start_size_index = 3;
+    for (int i = start_size_index; i < NUM_SIZES; i++) {
+        size_t m = sizes[i];
+        int    rows_in = m / world_size;
         int    first_row = rows_in * world_rank;
 
-        size_t m = rows_in;
+        size_t n = rows_in;
 
         for (int j = 0; j < NUM_MATRIX_VARAINTS; j++) {
             string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
@@ -96,6 +97,12 @@ int main(int argc, char *argv[]) {
             start = clock_now();
             string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
                                   to_string(n) + types[j] + ".mtx";
+
+            // std::string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
+            // to_string(n) +
+            //                types[j] + "part" + to_string(world_rank) + ".mtx";
+            // write_partial_matrix_to_file_serial(deviceQ, rows_in, n, out_filename);
+
             double **B;
             if (MASTER == world_rank) {
                 B = (double **)malloc(sizeof(double *) * n);
@@ -149,6 +156,12 @@ int main(int argc, char *argv[]) {
             deviceQ = matrixDeviceToHost(Q, n, m);
 
             start = clock_now();
+
+            // Every rank will save their own file.
+            // out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+            //                types[j] + "part" + to_string(world_rank) + ".mtx";
+            // write_partial_matrix_to_file_serial(deviceQ, rows_in, n, out_filename);
+
             out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
                            types[j] + ".mtx";
 
