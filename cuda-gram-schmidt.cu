@@ -171,8 +171,8 @@ void cudaSetup(size_t myrank) {
 
 void cudaCleanup() { cudaFree(magnitude); }
 
-void cleanupMatrix(double **A, size_t m) {
-    for (size_t i = 0; i < m; i++)
+void cleanupMatrix(double **A, size_t number_vectors) {
+    for (size_t i = 0; i < number_vectors; i++)
         cudaFree(A[i]);
     free(A);
 }
@@ -180,23 +180,23 @@ void cleanupMatrix(double **A, size_t m) {
 void cleanupVector(double *vec) { cudaFree(vec); }
 
 // Create 'n' random columns of 'n' entries
-double **createTestMatrix(size_t n) {
+double **createTestMatrix(size_t number_vectors, size_t vector_size) {
     double **ret, *tmp, *local;
 
     // Create local to hold the randomly-generated column
-    local = (double *)malloc(sizeof(double) * n);
+    local = (double *)malloc(sizeof(double) * vector_size);
 
     // ret will be created on the CPU so it can reference the devices pointers
-    ret = (double **)malloc(sizeof(double *) * n);
+    ret = (double **)malloc(sizeof(double *) * number_vectors);
 
-    for (size_t i = 0; i < n; i++) {
+    for (size_t i = 0; i < number_vectors; i++) {
         // Randomly populate local copy
-        for (size_t j = 0; j < n; j++) {
+        for (size_t j = 0; j < vector_size; j++) {
             local[j] = ((double)rand() / (double)RAND_MAX);
         }
         // Transfer local copy onto the device
-        cudaMalloc(&tmp, sizeof(double) * n);
-        cudaMemcpy(tmp, local, sizeof(double) * n, cudaMemcpyHostToDevice);
+        cudaMalloc(&tmp, sizeof(double) * vector_size);
+        cudaMemcpy(tmp, local, sizeof(double) * vector_size, cudaMemcpyHostToDevice);
         // Set the row
         ret[i] = tmp;
     }
@@ -206,135 +206,142 @@ double **createTestMatrix(size_t n) {
     return ret;
 }
 
-double **allocateMatrix(size_t n) {
+double **allocateMatrix(size_t number_vectors, size_t vector_size) {
     double **ret, *tmp;
     // ret will be created on the CPU so it can reference the device pointers
-    ret = (double **)malloc(sizeof(double *) * n);
-    for (size_t i = 0; i < n; i++) {
+    ret = (double **)malloc(sizeof(double *) * number_vectors);
+    for (size_t i = 0; i < number_vectors; i++) {
         // Transfer local copy onto the device
-        cudaMalloc(&tmp, sizeof(double) * n);
+        cudaMalloc(&tmp, sizeof(double) * vector_size);
         // Set the row
         ret[i] = tmp;
     }
     return ret;
 }
 
-double **allocateMNMatrix(size_t n, size_t m) {
-    double **ret, *tmp;
-    // ret will be created on the CPU so it can reference the device pointers
-    ret = (double **)malloc(sizeof(double *) * m);
-    for (size_t i = 0; i < m; i++) {
-        // Transfer local copy onto the device
-        cudaMalloc(&tmp, sizeof(double) * n);
-        // Set the row
-        ret[i] = tmp;
-    }
-    return ret;
-}
+// double **allocateMNMatrix(size_t n, size_t m) {
+//     double **ret, *tmp;
+//     // ret will be created on the CPU so it can reference the device pointers
+//     ret = (double **)malloc(sizeof(double *) * m);
+//     for (size_t i = 0; i < m; i++) {
+//         // Transfer local copy onto the device
+//         cudaMalloc(&tmp, sizeof(double) * n);
+//         // Set the row
+//         ret[i] = tmp;
+//     }
+//     return ret;
+// }
 
-double *allocateVector(size_t n) {
+double *allocateVector(size_t vector_size) {
     double *ret;
-    cudaMalloc(&ret, sizeof(double) * n);
+    cudaMalloc(&ret, sizeof(double) * vector_size);
     return ret;
 }
 
-double **matrixDeviceToHost(double **A, size_t n, size_t m) {
-    double *tmp, **ret = (double **)malloc(sizeof(double *) * m);
-    for (size_t i = 0; i < m; i++) {
-        tmp = (double *)malloc(sizeof(double) * n);
-        cudaMemcpy(tmp, A[i], n * sizeof(double), cudaMemcpyDeviceToHost);
+double **matrixDeviceToHost(double **A, size_t number_vectors, size_t vector_size) {
+    double *tmp, **ret = (double **)malloc(sizeof(double *) * number_vectors);
+    for (size_t i = 0; i < number_vectors; i++) {
+        tmp = (double *)malloc(sizeof(double) * vector_size);
+        cudaMemcpy(tmp, A[i], vector_size * sizeof(double), cudaMemcpyDeviceToHost);
         ret[i] = tmp;
     }
     return ret;
 }
 
-double **matrixHostToDevice(double **A, size_t n, size_t m) {
+double **matrixHostToDevice(double **A, size_t number_vectors, size_t vector_size) {
     double **ret, *tmp;
-    ret = (double **)malloc(sizeof(double *) * m);
-    for (size_t i = 0; i < m; i++) {
+    ret = (double **)malloc(sizeof(double *) * number_vectors);
+    for (size_t i = 0; i < number_vectors; i++) {
         // Transfer local copy onto the device
-        cudaMalloc(&tmp, sizeof(double) * n);
+        cudaMalloc(&tmp, sizeof(double) * vector_size);
         // Copy the memory over
-        cudaMemcpy(tmp, A[i], n * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(tmp, A[i], vector_size * sizeof(double), cudaMemcpyHostToDevice);
         // Set the row
         ret[i] = tmp;
     }
     return ret;
 }
 
-void matrixCopy(double **A, double **B, size_t m, size_t n) {
-    for (size_t i = 0; i < m; i++) {
-        cudaMemcpy(B[i], A[i], n * sizeof(double), cudaMemcpyDeviceToDevice);
+void matrixCopy(double **A, double **B, size_t number_vectors, size_t vector_size) {
+    for (size_t i = 0; i < number_vectors; i++) {
+        cudaMemcpy(B[i], A[i], vector_size * sizeof(double), cudaMemcpyDeviceToDevice);
     }
 }
 
 // Returns the reduced result of the dot product operation
-double distributedDotProduct(double *a, double *b, size_t n) {
+double distributedDotProduct(double *a, double *b, size_t partial_vector_size) {
     double res;
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, a, b, magnitude);
+    vector_dot_product<<<1, partial_vector_size, sizeof(double) * partial_vector_size>>>(
+        partial_vector_size, a, b, magnitude);
     cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
     my_MPIReduce(host_magnitude, 1, &res);
     return res;
 }
 
-void distributedNormalize(double *src, double *dst, size_t n) {
-    double dot = distributedDotProduct(src, src, n);
+void distributedNormalize(double *src, double *dst, size_t partial_vector_size) {
+    double dot = distributedDotProduct(src, src, partial_vector_size);
     cudaMemcpy(magnitude, &dot, sizeof(double), cudaMemcpyHostToDevice);
     // Need to copy the src into the dst before we divide if different.
     if (src != dst) {
-        cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+        cudaMemcpy(dst, src, sizeof(double) * partial_vector_size,
+                   cudaMemcpyDeviceToDevice);
     }
     // Divide happens here.
-    vector_normalize<<<1, n>>>(n, dst, magnitude);
+    vector_normalize<<<1, partial_vector_size>>>(partial_vector_size, dst, magnitude);
 }
 
-void normalize(double *src, double *dst, size_t n) {
+void normalize(double *src, double *dst, size_t vector_size) {
     // Find the value to divide by
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, src, src, magnitude);
+    vector_dot_product<<<1, vector_size, sizeof(double) * vector_size>>>(vector_size, src,
+                                                                         src, magnitude);
     if (src != dst) {
         // Need to copy the src into the dst before we divide
-        cudaMemcpy(dst, src, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+        cudaMemcpy(dst, src, sizeof(double) * vector_size, cudaMemcpyDeviceToDevice);
     }
     // Divide happens here
-    vector_normalize<<<1, n>>>(n, dst, magnitude);
+    vector_normalize<<<1, vector_size>>>(vector_size, dst, magnitude);
 }
 
-void distributedProjection(double *vector, double *base, double *result, size_t n) {
+void distributedProjection(double *vector, double *base, double *result,
+                           size_t partial_vector_size) {
     // We assume the base to have magnitude 1, saving us from this division.
     // But we do need to find the numerator.
-    double dot = distributedDotProduct(vector, base, n);
+    double dot = distributedDotProduct(vector, base, partial_vector_size);
     if (base != result) {
         // Need to copy the base to the result before we multiply, as it happens in-place.
-        cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+        cudaMemcpy(result, base, sizeof(double) * partial_vector_size,
+                   cudaMemcpyDeviceToDevice);
     }
     cudaMemcpy(magnitude, &dot, sizeof(double), cudaMemcpyHostToDevice);
     // Now, we can multiply the base by this magnitude
-    vector_mult<<<1, n>>>(n, result, magnitude);
+    vector_mult<<<1, partial_vector_size>>>(partial_vector_size, result, magnitude);
 }
 
 // Requires the base to have magnitude 1 (to avoid an extra dot product)
-void projection(double *vector, double *base, double *result, size_t n) {
+void projection(double *vector, double *base, double *result, size_t vector_size) {
     // Find the numerator for the projection quotient
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, vector, base, magnitude);
+    vector_dot_product<<<1, vector_size, sizeof(double) * vector_size>>>(
+        vector_size, vector, base, magnitude);
     // We assume the base to have magnitude 1, saving us from this division
     if (base != result) {
         // Need to copy the base to the result before we multiply, as it happens in-place.
-        cudaMemcpy(result, base, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+        cudaMemcpy(result, base, sizeof(double) * vector_size, cudaMemcpyDeviceToDevice);
     }
     // Now, we can multiply the base by this magnitude
-    vector_mult<<<1, n>>>(n, result, magnitude);
+    vector_mult<<<1, vector_size>>>(vector_size, result, magnitude);
 }
 
-void subtract(double *a, double *b, double *dst, size_t n) {
+void subtract(double *a, double *b, double *dst, size_t vector_size) {
     if (a != dst) {
-        cudaMemcpy(dst, a, sizeof(double) * n, cudaMemcpyDeviceToDevice);
+        cudaMemcpy(dst, a, sizeof(double) * vector_size, cudaMemcpyDeviceToDevice);
     }
-    vector_subtraction<<<1, n>>>(n, dst, b);
+    vector_subtraction<<<1, vector_size>>>(vector_size, dst, b);
 }
 
-double dot(double *a, double *b, size_t n) {
+double dot(double *a, double *b, size_t vector_size) {
     // Take the dot product
-    vector_dot_product<<<1, n, sizeof(double) * n>>>(n, a, b, magnitude);
+    vector_dot_product<<<1, vector_size, sizeof(double) * vector_size>>>(vector_size, a,
+                                                                         b, magnitude);
     // Need to take the result out of device memory
     cudaMemcpy(host_magnitude, magnitude, sizeof(double), cudaMemcpyDeviceToHost);
     return *host_magnitude;
@@ -342,25 +349,34 @@ double dot(double *a, double *b, size_t n) {
 
 // Removes the projection of the completed index from every vector afterwards. A
 // has `m` columns and `n` rows.
-void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
+void performModifiedGramSchmidtReduction(double **A, size_t number_vectors,
+                                         size_t partial_vector_size,
                                          size_t completed_index) {
     double  *base = A[completed_index];
-    size_t   remainder_count = m - (completed_index + 1);
+    size_t   remainder_count = number_vectors - (completed_index + 1);
     double **remainder = (A + completed_index + 1);
     size_t   coefficient_size = sizeof(double) * remainder_count;
     double  *dots, *host_dots, *coeffs;
+
     cudaMalloc(&dots, coefficient_size);
+
     host_dots = (double *)malloc(coefficient_size);
     coeffs = (double *)malloc(coefficient_size);
-    // many_vector_projection_subtractions<<<1, n>>>(base, remainder, remainder_count,
-    // n); Do all of the dot products
-    many_vector_dot_product<<<1, n, coefficient_size * n>>>(base, remainder,
-                                                            remainder_count, n, dots);
+
+    many_vector_dot_product<<<1, partial_vector_size,
+                              sizeof(double) * remainder_count * partial_vector_size>>>(
+        base, remainder, remainder_count, partial_vector_size, dots);
+
     // Communicate with the other MPI ranks to discover the complete dot product
     cudaMemcpy(host_dots, dots, coefficient_size, cudaMemcpyDeviceToHost);
     my_MPIReduce(host_dots, remainder_count, coeffs);
     cudaMemcpy(dots, coeffs, coefficient_size, cudaMemcpyHostToDevice);
+
     // Use that dot product to do vector subtractions
-    many_vector_subtractions<<<1, n>>>(base, remainder, dots, remainder_count, n);
+    many_vector_subtractions<<<1, partial_vector_size>>>(
+        base, remainder, dots, remainder_count, partial_vector_size);
+
+    free(host_dots);
+    free(coeffs);
     cudaFree(dots);
 }

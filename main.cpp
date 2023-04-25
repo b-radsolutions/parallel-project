@@ -21,6 +21,44 @@
 
 using namespace std;
 
+void write_matrix(int world_rank, size_t VECTOR_SIZE, size_t NUMBER_VECTORS,
+                  double **deviceMatrix, string out_filename_prefix) {
+    // Every rank will save their own file.
+    // out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
+    //                 types[j] + "part" + to_string(world_rank) + ".mtx";
+
+    string out_filename = out_filename_prefix + "_part_" + to_string(world_rank) + ".mtx";
+    write_partial_matrix_to_file_serial(deviceMatrix, NUMBER_VECTORS, VECTOR_SIZE,
+                                        out_filename);
+
+    // double **B;
+    // if (MASTER == world_rank) {
+    //     B = (double **)malloc(sizeof(double *) * NUMBER_VECTORS);
+    // }
+    // for (int k = 0; k < NUMBER_VECTORS; ++k) {
+    //     double *current = (double *)malloc(sizeof(double) * VECTOR_SIZE);
+    //     for (int l = 0; l < NUMBER_VECTORS; ++l) {
+    //         current[l] = deviceMatrix[l][k];
+    //     }
+    //     double *tmp;
+    //     if (world_rank == MASTER) {
+    //         B[k] = (double *)malloc(sizeof(double) * VECTOR_SIZE);
+    //         tmp = B[k];
+    //     }
+    //     MPI_Gather(current, NUMBER_VECTORS, MPI_DOUBLE, tmp, NUMBER_VECTORS,
+    //     MPI_DOUBLE,
+    //                MASTER, MPI_COMM_WORLD);
+    //     free(current);
+    // }
+    // if (MASTER == world_rank) {
+    //     write_matrix_to_file_serial(B, NUMBER_VECTORS, out_filename);
+    //     for (int k = 0; k < NUMBER_VECTORS; ++k) {
+    //         free(B[k]);
+    //     }
+    //     free(B);
+    // }
+}
+
 // Takes in args, and runs MPI
 int main(int argc, char *argv[]) {
     long long unsigned start = clock_now();
@@ -44,38 +82,46 @@ int main(int argc, char *argv[]) {
     int         sizes[11] = {4, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
     std::string types[4] = {"dense", "sparse", "well-conditioned", "ill-conditioned"};
 
+    string prefix = "out/" + to_string(world_size) + "/";
+
     // MPI portion
 
     MPI_Barrier(MPI_COMM_WORLD);
-    if (world_rank == MASTER)
+    if (world_rank == MASTER) {
+        printf("WORLD SIZE: %d\n\n", world_size);
         printf("\n\n------Running Parallel------\n\n");
+    }
 
-    const int start_size_index = 3;
-    for (int i = start_size_index; i < NUM_SIZES; i++) {
-        size_t m = sizes[i];
-        int    rows_in = m / world_size;
-        int    first_row = rows_in * world_rank;
-
-        size_t n = rows_in;
+    for (int i = 0; i < NUM_SIZES; i++) {
+        // const int start_size_index = 3;
+        // for (int i = start_size_index; i < start_size_index + 1; i++) {
+        size_t NUMBER_VECTORS = sizes[i];
+        size_t VECTOR_SIZE = NUMBER_VECTORS / world_size;
+        int    first_row = VECTOR_SIZE * world_rank;
 
         for (int j = 0; j < NUM_MATRIX_VARAINTS; j++) {
-            string in_filename = "data/" + types[j] + "/" + to_string(n) + ".mtx";
+            // for (int j = 0; j < 1; j++) {
+            string in_filename =
+                "data/" + types[j] + "/" + to_string(NUMBER_VECTORS) + ".mtx";
             if (world_rank == MASTER) {
                 cout << "MPI Rank " << world_rank << ": READING Matrix " << in_filename
-                     << "\t" << n << " by " << n << " in Parallel\n";
+                     << "\t" << NUMBER_VECTORS << " by " << NUMBER_VECTORS
+                     << " in Parallel\n";
             }
             start = clock_now();
-            double **input_matrix = read_partial_matrix(n, first_row, m, in_filename);
+            double **input_matrix =
+                read_partial_matrix(VECTOR_SIZE, first_row, NUMBER_VECTORS, in_filename);
             end = clock_now();
 
             if (world_rank == MASTER)
-                cout << "READ Matrix " << n << " by " << n << " in " << (end - start)
-                     << " cycles (" << (end - start) / clock_frequency << " secs)\n";
+                cout << "READ Matrix " << NUMBER_VECTORS << " by " << NUMBER_VECTORS
+                     << " in " << (end - start) << " cycles ("
+                     << (end - start) / clock_frequency << " secs)\n";
 
             // Need to move this matrix into the device
-            double **A = matrixHostToDevice(input_matrix, n, m);
+            double **A = matrixHostToDevice(input_matrix, NUMBER_VECTORS, VECTOR_SIZE);
             // Also need to initialize the result matrix Q
-            double **Q = allocateMNMatrix(n, m);
+            double **Q = allocateMatrix(NUMBER_VECTORS, VECTOR_SIZE);
 
             if (world_rank == MASTER) {
                 cout << "RUNNING Parallel Modified Gram-Schmidt\t" << types[j] << "\t"
@@ -83,7 +129,7 @@ int main(int argc, char *argv[]) {
             }
 
             start = clock_now();
-            parallel_modified_gram_schmidt(A, m, n, Q);
+            parallel_modified_gram_schmidt(A, NUMBER_VECTORS, VECTOR_SIZE, Q);
             end = clock_now();
 
             if (world_rank == MASTER) {
@@ -92,47 +138,18 @@ int main(int argc, char *argv[]) {
             }
 
             // Move the matrix from the device back to the host
-            double **deviceQ = matrixDeviceToHost(Q, n, m);
+            double **deviceQ = matrixDeviceToHost(Q, NUMBER_VECTORS, VECTOR_SIZE);
 
+            // Write the matrix
             start = clock_now();
-            string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
-                                  to_string(n) + types[j] + ".mtx";
-
-            // std::string out_filename = "out/ModifiedParallel" + to_string(n) + "by" +
-            // to_string(n) +
-            //                types[j] + "part" + to_string(world_rank) + ".mtx";
-            // write_partial_matrix_to_file_serial(deviceQ, rows_in, n, out_filename);
-
-            double **B;
-            if (MASTER == world_rank) {
-                B = (double **)malloc(sizeof(double *) * n);
-            }
-            for (int k = 0; k < n; ++k) {
-                double *current = (double *)malloc(sizeof(double) * rows_in);
-                for (int l = 0; l < rows_in; ++l) {
-                    current[l] = deviceQ[l][k];
-                }
-                double *tmp;
-                if (world_rank == MASTER) {
-                    B[k] = (double *)malloc(sizeof(double) * n);
-                    tmp = B[k];
-                }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
-                           MPI_COMM_WORLD);
-                free(current);
-            }
-            if (MASTER == world_rank) {
-                write_matrix_to_file_serial(B, n, out_filename);
-                for (int k = 0; k < n; ++k) {
-                    free(B[k]);
-                }
-                free(B);
-            }
-
+            string out_filename = prefix + "ModifiedParallel" +
+                                  to_string(NUMBER_VECTORS) + "by" +
+                                  to_string(NUMBER_VECTORS) + types[j];
+            write_matrix(world_rank, VECTOR_SIZE, NUMBER_VECTORS, deviceQ, out_filename);
             end = clock_now();
             MPI_Barrier(MPI_COMM_WORLD);
 
-            for (size_t i = 0; i < m; i++)
+            for (size_t i = 0; i < NUMBER_VECTORS; i++)
                 free(deviceQ[i]);
             free(deviceQ);
 
@@ -143,8 +160,10 @@ int main(int argc, char *argv[]) {
                      << sizes[i] << "\n";
             }
 
+            A = matrixHostToDevice(input_matrix, NUMBER_VECTORS, VECTOR_SIZE);
+
             start = clock_now();
-            parallel_gram_schmidt(A, m, n, Q);
+            parallel_gram_schmidt(A, NUMBER_VECTORS, VECTOR_SIZE, Q);
             end = clock_now();
 
             if (world_rank == MASTER) {
@@ -153,43 +172,12 @@ int main(int argc, char *argv[]) {
             }
 
             // Move the matrix from the device back to the host
-            deviceQ = matrixDeviceToHost(Q, n, m);
+            deviceQ = matrixDeviceToHost(Q, NUMBER_VECTORS, VECTOR_SIZE);
 
             start = clock_now();
-
-            // Every rank will save their own file.
-            // out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-            //                types[j] + "part" + to_string(world_rank) + ".mtx";
-            // write_partial_matrix_to_file_serial(deviceQ, rows_in, n, out_filename);
-
-            out_filename = "out/ClassicParallel" + to_string(n) + "by" + to_string(n) +
-                           types[j] + ".mtx";
-
-            if (MASTER == world_rank) {
-                B = (double **)malloc(sizeof(double *) * n);
-            }
-            for (int k = 0; k < n; ++k) {
-                double *current = (double *)malloc(sizeof(double) * rows_in);
-                for (int l = 0; l < rows_in; ++l) {
-                    current[l] = deviceQ[l][k];
-                }
-                double *tmp;
-                if (world_rank == MASTER) {
-                    B[k] = (double *)malloc(sizeof(double) * n);
-                    tmp = B[k];
-                }
-                MPI_Gather(current, rows_in, MPI_DOUBLE, tmp, rows_in, MPI_DOUBLE, MASTER,
-                           MPI_COMM_WORLD);
-                free(current);
-            }
-            if (MASTER == world_rank) {
-                write_matrix_to_file_serial(B, n, out_filename);
-                for (int k = 0; k < n; ++k) {
-                    free(B[k]);
-                }
-                free(B);
-            }
-
+            out_filename = prefix + "ClassicParallel" + to_string(NUMBER_VECTORS) + "by" +
+                           to_string(NUMBER_VECTORS) + types[j];
+            write_matrix(world_rank, VECTOR_SIZE, NUMBER_VECTORS, deviceQ, out_filename);
             end = clock_now();
             MPI_Barrier(MPI_COMM_WORLD);
 
@@ -198,9 +186,11 @@ int main(int argc, char *argv[]) {
                      << (end - start) / clock_frequency << " secs)\n\n";
             }
 
-            for (size_t i = 0; i < m; i++)
+            for (size_t i = 0; i < NUMBER_VECTORS; i++)
                 free(deviceQ[i]);
             free(deviceQ);
+
+            // todo:: cleanup
         }
         if (world_rank == MASTER)
             cout << "\n";

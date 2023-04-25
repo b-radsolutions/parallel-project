@@ -2,11 +2,11 @@
 generate.out: generate-matrix.cpp matrix-writer.cpp
 	g++ -O3 matrix-writer.cpp generate-matrix.cpp -o generate.out
 
-res.out: resurrect.cpp
-	g++ -O3 resurrect.cpp -o res.out
+res: resurrect.cpp
+	g++ -O3 resurrect.cpp -o res
 
-res: res.out
-	./res.out ../../1node/out/ClassicParallel64by64densepart 4 ./tmp
+scream: scream_matrix.cpp read_matrix_serial.cpp
+	g++ -O3 scream_matrix.cpp read_matrix_serial.cpp -o scream
 
 .PHONY: generate-all
 generate-all: generate.out

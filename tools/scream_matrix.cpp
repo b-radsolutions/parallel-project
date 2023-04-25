@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "tools/read_matrix_serial.hpp"
+#include "read_matrix_serial.hpp"
 
 // Don't use this...
 void print_matrix(double **A, size_t m, size_t n) {

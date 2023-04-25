@@ -22,15 +22,15 @@ int main(int argc, char *argv[]) {
         printf("Failed to open %s\n", part.c_str());
         return 1;
     }
-    size_t read_n;
-    file.read((char *)(&read_n), sizeof(size_t));
-    printf("%lu\n", read_n);
-    size_t expected_size = read_n * read_n / parts * sizeof(double);
+    size_t read_rows;
+    file.read((char *)(&read_rows), sizeof(size_t));
+    size_t vector_length = read_rows * parts;
+    size_t expected_size = read_rows * vector_length * sizeof(double);
     char   buffer[expected_size];
     file.read(buffer, expected_size);
     file.close();
 
-    size_t n = read_n;
+    size_t n = read_rows;
 
     // Open the output file
     std::ofstream output(argv[3], std::ios::out | std::ios::binary);
@@ -38,8 +38,8 @@ int main(int argc, char *argv[]) {
         printf("Failed to open output file %s\n", argv[3]);
         return 1;
     }
-    // Write the size
-    output.write((char *)&n, sizeof(size_t));
+    // Write the output size
+    output.write((char *)&vector_length, sizeof(size_t));
     // Write the first part
     output.write(buffer, expected_size);
 
@@ -52,10 +52,10 @@ int main(int argc, char *argv[]) {
             printf("Failed to open %s\n", part.c_str());
             return 1;
         }
-        file.read((char *)(&read_n), sizeof(size_t));
-        if (read_n != n) {
+        file.read((char *)(&read_rows), sizeof(size_t));
+        if (read_rows != n) {
             printf("Part %s had incorrect size %lu (expected: %lu)\n", part.c_str(),
-                   read_n, n);
+                   read_rows, n);
             return 1;
         }
         file.read(buffer, expected_size);
@@ -64,6 +64,6 @@ int main(int argc, char *argv[]) {
     }
     output.close();
 
-    printf("Wrote %lu parts to '%s', n=%lu\n", parts, argv[3], n);
+    printf("Wrote %lu parts to '%s', n=%lu\n", parts, argv[3], vector_length);
     return 0;
 }
