@@ -45,8 +45,4 @@ clean:
 	rm -f $(OBJS)
 	rm ./$(OUTPUT)
 	rm -rf ./*.dSYM
-
-ortho:
-	mkdir -p out
-	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho.out
 	

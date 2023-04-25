@@ -8,6 +8,218 @@ res: resurrect.cpp
 scream: scream_matrix.cpp read_matrix_serial.cpp
 	g++ -O3 scream_matrix.cpp read_matrix_serial.cpp -o scream
 
+ortho:
+	g++ calculate-norms.cpp read_matrix_serial.cpp orthogonality-test.cpp -o ortho
+
+INPUT_LOC=../../results/out
+OUTPUT_LOC=../../results/reconstruct
+.PHONY: process
+process: res ortho
+	@echo "Reconstruct matrices from partials"
+	@./res $(INPUT_LOC)/4/ModifiedParallel4by4dense_part_ 4 $(OUTPUT_LOC)/4/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel16by16dense_part_ 4 $(OUTPUT_LOC)/4/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel32by32dense_part_ 4 $(OUTPUT_LOC)/4/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel64by64dense_part_ 4 $(OUTPUT_LOC)/4/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel128by128dense_part_ 4 $(OUTPUT_LOC)/4/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel256by256dense_part_ 4 $(OUTPUT_LOC)/4/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel512by512dense_part_ 4 $(OUTPUT_LOC)/4/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel1024by1024dense_part_ 4 $(OUTPUT_LOC)/4/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel2048by2048dense_part_ 4 $(OUTPUT_LOC)/4/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel4096by4096dense_part_ 4 $(OUTPUT_LOC)/4/MP4096dense.mtx > /dev/null
+	
+	@./res $(INPUT_LOC)/8/ModifiedParallel4by4dense_part_ 8 $(OUTPUT_LOC)/8/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel16by16dense_part_ 8 $(OUTPUT_LOC)/8/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel32by32dense_part_ 8 $(OUTPUT_LOC)/8/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel64by64dense_part_ 8 $(OUTPUT_LOC)/8/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel128by128dense_part_ 8 $(OUTPUT_LOC)/8/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel256by256dense_part_ 8 $(OUTPUT_LOC)/8/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel512by512dense_part_ 8 $(OUTPUT_LOC)/8/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel1024by1024dense_part_ 8 $(OUTPUT_LOC)/8/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel2048by2048dense_part_ 8 $(OUTPUT_LOC)/8/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel4096by4096dense_part_ 8 $(OUTPUT_LOC)/8/MP4096dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/16/ModifiedParallel4by4dense_part_ 16 $(OUTPUT_LOC)/16/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel16by16dense_part_ 16 $(OUTPUT_LOC)/16/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel32by32dense_part_ 16 $(OUTPUT_LOC)/16/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel64by64dense_part_ 16 $(OUTPUT_LOC)/16/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel128by128dense_part_ 16 $(OUTPUT_LOC)/16/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel256by256dense_part_ 16 $(OUTPUT_LOC)/16/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel512by512dense_part_ 16 $(OUTPUT_LOC)/16/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel1024by1024dense_part_ 16 $(OUTPUT_LOC)/16/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel2048by2048dense_part_ 16 $(OUTPUT_LOC)/16/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel4096by4096dense_part_ 16 $(OUTPUT_LOC)/16/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel8192by8192dense_part_ 16 $(OUTPUT_LOC)/16/MP8192dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/32/ModifiedParallel4by4dense_part_ 32 $(OUTPUT_LOC)/32/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel16by16dense_part_ 32 $(OUTPUT_LOC)/32/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel32by32dense_part_ 32 $(OUTPUT_LOC)/32/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel64by64dense_part_ 32 $(OUTPUT_LOC)/32/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel128by128dense_part_ 32 $(OUTPUT_LOC)/32/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel256by256dense_part_ 32 $(OUTPUT_LOC)/32/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel512by512dense_part_ 32 $(OUTPUT_LOC)/32/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel1024by1024dense_part_ 32 $(OUTPUT_LOC)/32/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel2048by2048dense_part_ 32 $(OUTPUT_LOC)/32/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel4096by4096dense_part_ 32 $(OUTPUT_LOC)/32/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel8192by8192dense_part_ 32 $(OUTPUT_LOC)/32/MP8192dense.mtx > /dev/null
+
+	@echo "Calculating norms"
+	./ortho -r $(OUTPUT_LOC)/4/
+	./ortho -r $(OUTPUT_LOC)/8/
+	./ortho -r $(OUTPUT_LOC)/16/
+	./ortho -r $(OUTPUT_LOC)/32/
+
+
+CLASSIC_OUTPUT_LOC=../../results/reconstruct
+.PHONY: process-other
+process-other: res ortho
+	@echo "Reconstruct matrices from partials"
+	@echo "Sparse"
+	@./res $(INPUT_LOC)/4/ModifiedParallel4by4sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel16by16sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel32by32sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel64by64sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel128by128sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel256by256sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel512by512sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel1024by1024sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel2048by2048sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel4096by4096sparse_part_ 4 $(OUTPUT_LOC)/4sp/MP4096dense.mtx > /dev/null
+	
+	@./res $(INPUT_LOC)/8/ModifiedParallel4by4sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel16by16sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel32by32sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel64by64sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel128by128sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel256by256sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel512by512sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel1024by1024sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel2048by2048sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel4096by4096sparse_part_ 8 $(OUTPUT_LOC)/8sp/MP4096dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/16/ModifiedParallel4by4sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel16by16sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel32by32sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel64by64sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel128by128sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel256by256sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel512by512sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel1024by1024sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel2048by2048sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel4096by4096sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel8192by8192sparse_part_ 16 $(OUTPUT_LOC)/16sp/MP8192dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/32/ModifiedParallel4by4sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel16by16sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel32by32sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel64by64sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel128by128sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel256by256sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel512by512sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel1024by1024sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel2048by2048sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel4096by4096sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel8192by8192sparse_part_ 32 $(OUTPUT_LOC)/32sp/MP8192dense.mtx > /dev/null
+
+	@echo "Calculating norms for sparse"
+	./ortho -r $(OUTPUT_LOC)/4sp/
+	./ortho -r $(OUTPUT_LOC)/8sp/
+	./ortho -r $(OUTPUT_LOC)/16sp/
+	./ortho -r $(OUTPUT_LOC)/32sp/
+
+	@echo "Ill-conditioned"
+	@./res $(INPUT_LOC)/4/ModifiedParallel4by4dense_part_ 4 $(OUTPUT_LOC)/4/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel16by16dense_part_ 4 $(OUTPUT_LOC)/4/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel32by32dense_part_ 4 $(OUTPUT_LOC)/4/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel64by64dense_part_ 4 $(OUTPUT_LOC)/4/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel128by128dense_part_ 4 $(OUTPUT_LOC)/4/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel256by256dense_part_ 4 $(OUTPUT_LOC)/4/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel512by512dense_part_ 4 $(OUTPUT_LOC)/4/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel1024by1024dense_part_ 4 $(OUTPUT_LOC)/4/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel2048by2048dense_part_ 4 $(OUTPUT_LOC)/4/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel4096by4096dense_part_ 4 $(OUTPUT_LOC)/4/MP4096dense.mtx > /dev/null
+	
+	@./res $(INPUT_LOC)/8/ModifiedParallel4by4dense_part_ 8 $(OUTPUT_LOC)/8/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel16by16dense_part_ 8 $(OUTPUT_LOC)/8/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel32by32dense_part_ 8 $(OUTPUT_LOC)/8/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel64by64dense_part_ 8 $(OUTPUT_LOC)/8/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel128by128dense_part_ 8 $(OUTPUT_LOC)/8/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel256by256dense_part_ 8 $(OUTPUT_LOC)/8/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel512by512dense_part_ 8 $(OUTPUT_LOC)/8/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel1024by1024dense_part_ 8 $(OUTPUT_LOC)/8/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel2048by2048dense_part_ 8 $(OUTPUT_LOC)/8/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel4096by4096dense_part_ 8 $(OUTPUT_LOC)/8/MP4096dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/16/ModifiedParallel4by4dense_part_ 16 $(OUTPUT_LOC)/16/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel16by16dense_part_ 16 $(OUTPUT_LOC)/16/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel32by32dense_part_ 16 $(OUTPUT_LOC)/16/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel64by64dense_part_ 16 $(OUTPUT_LOC)/16/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel128by128dense_part_ 16 $(OUTPUT_LOC)/16/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel256by256dense_part_ 16 $(OUTPUT_LOC)/16/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel512by512dense_part_ 16 $(OUTPUT_LOC)/16/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel1024by1024dense_part_ 16 $(OUTPUT_LOC)/16/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel2048by2048dense_part_ 16 $(OUTPUT_LOC)/16/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel4096by4096dense_part_ 16 $(OUTPUT_LOC)/16/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel8192by8192dense_part_ 16 $(OUTPUT_LOC)/16/MP8192dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/32/ModifiedParallel4by4dense_part_ 32 $(OUTPUT_LOC)/32/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel16by16dense_part_ 32 $(OUTPUT_LOC)/32/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel32by32dense_part_ 32 $(OUTPUT_LOC)/32/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel64by64dense_part_ 32 $(OUTPUT_LOC)/32/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel128by128dense_part_ 32 $(OUTPUT_LOC)/32/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel256by256dense_part_ 32 $(OUTPUT_LOC)/32/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel512by512dense_part_ 32 $(OUTPUT_LOC)/32/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel1024by1024dense_part_ 32 $(OUTPUT_LOC)/32/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel2048by2048dense_part_ 32 $(OUTPUT_LOC)/32/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel4096by4096dense_part_ 32 $(OUTPUT_LOC)/32/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel8192by8192dense_part_ 32 $(OUTPUT_LOC)/32/MP8192dense.mtx > /dev/null
+
+	@echo "Good"
+	@./res $(INPUT_LOC)/4/ModifiedParallel4by4dense_part_ 4 $(OUTPUT_LOC)/4/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel16by16dense_part_ 4 $(OUTPUT_LOC)/4/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel32by32dense_part_ 4 $(OUTPUT_LOC)/4/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel64by64dense_part_ 4 $(OUTPUT_LOC)/4/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel128by128dense_part_ 4 $(OUTPUT_LOC)/4/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel256by256dense_part_ 4 $(OUTPUT_LOC)/4/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel512by512dense_part_ 4 $(OUTPUT_LOC)/4/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel1024by1024dense_part_ 4 $(OUTPUT_LOC)/4/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel2048by2048dense_part_ 4 $(OUTPUT_LOC)/4/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/4/ModifiedParallel4096by4096dense_part_ 4 $(OUTPUT_LOC)/4/MP4096dense.mtx > /dev/null
+	
+	@./res $(INPUT_LOC)/8/ModifiedParallel4by4dense_part_ 8 $(OUTPUT_LOC)/8/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel16by16dense_part_ 8 $(OUTPUT_LOC)/8/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel32by32dense_part_ 8 $(OUTPUT_LOC)/8/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel64by64dense_part_ 8 $(OUTPUT_LOC)/8/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel128by128dense_part_ 8 $(OUTPUT_LOC)/8/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel256by256dense_part_ 8 $(OUTPUT_LOC)/8/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel512by512dense_part_ 8 $(OUTPUT_LOC)/8/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel1024by1024dense_part_ 8 $(OUTPUT_LOC)/8/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel2048by2048dense_part_ 8 $(OUTPUT_LOC)/8/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/8/ModifiedParallel4096by4096dense_part_ 8 $(OUTPUT_LOC)/8/MP4096dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/16/ModifiedParallel4by4dense_part_ 16 $(OUTPUT_LOC)/16/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel16by16dense_part_ 16 $(OUTPUT_LOC)/16/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel32by32dense_part_ 16 $(OUTPUT_LOC)/16/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel64by64dense_part_ 16 $(OUTPUT_LOC)/16/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel128by128dense_part_ 16 $(OUTPUT_LOC)/16/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel256by256dense_part_ 16 $(OUTPUT_LOC)/16/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel512by512dense_part_ 16 $(OUTPUT_LOC)/16/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel1024by1024dense_part_ 16 $(OUTPUT_LOC)/16/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel2048by2048dense_part_ 16 $(OUTPUT_LOC)/16/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel4096by4096dense_part_ 16 $(OUTPUT_LOC)/16/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/16/ModifiedParallel8192by8192dense_part_ 16 $(OUTPUT_LOC)/16/MP8192dense.mtx > /dev/null
+
+	@./res $(INPUT_LOC)/32/ModifiedParallel4by4dense_part_ 32 $(OUTPUT_LOC)/32/MP4dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel16by16dense_part_ 32 $(OUTPUT_LOC)/32/MP16dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel32by32dense_part_ 32 $(OUTPUT_LOC)/32/MP32dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel64by64dense_part_ 32 $(OUTPUT_LOC)/32/MP64dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel128by128dense_part_ 32 $(OUTPUT_LOC)/32/MP128dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel256by256dense_part_ 32 $(OUTPUT_LOC)/32/MP256dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel512by512dense_part_ 32 $(OUTPUT_LOC)/32/MP512dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel1024by1024dense_part_ 32 $(OUTPUT_LOC)/32/MP1024dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel2048by2048dense_part_ 32 $(OUTPUT_LOC)/32/MP2048dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel4096by4096dense_part_ 32 $(OUTPUT_LOC)/32/MP4096dense.mtx > /dev/null
+	@./res $(INPUT_LOC)/32/ModifiedParallel8192by8192dense_part_ 32 $(OUTPUT_LOC)/32/MP8192dense.mtx > /dev/null
+
 .PHONY: generate-all
 generate-all: generate.out
 	mkdir -p ../data
