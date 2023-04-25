@@ -1,0 +1,359 @@
++ module load spectrum-mpi cuda/11.2
+++ /usr/share/lmod/lmod/libexec/lmod bash load spectrum-mpi cuda/11.2
+
+The following have been reloaded with a version change:
+  1) cuda/11.0 => cuda/11.2
+
++ eval 'CCI_SMPI_SET_TS=2021082400;' export 'CCI_SMPI_SET_TS;' 'CUDA_HOME=/usr/local/cuda-11.2;' export 'CUDA_HOME;' 'CUDA_PATH=/usr/local/cuda-11.2;' export 'CUDA_PATH;' '__LMOD_REF_COUNT_LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:1\;/opt/ibm/spectrum_mpi/profilesupport/lib:1\;/opt/ibm/spectrum_mpi/lib:1\;/opt/mellanox/sharp/lib:1\;/opt/mellanox/hcoll/lib:1;' export '__LMOD_REF_COUNT_LD_LIBRARY_PATH;' 'LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:/opt/ibm/spectrum_mpi/profilesupport/lib:/opt/ibm/spectrum_mpi/lib:/opt/mellanox/sharp/lib:/opt/mellanox/hcoll/lib;' export 'LD_LIBRARY_PATH;' 'LMOD_FAMILY_MPI=spectrum-mpi;' export 'LMOD_FAMILY_MPI;' 'LMOD_FAMILY_MPI_VERSION=10.4;' export 'LMOD_FAMILY_MPI_VERSION;' '__LMOD_REF_COUNT_LOADEDMODULES=xl_r/16.1.1:1\;spectrum-mpi/10.4:1\;cuda/11.2:1;' export '__LMOD_REF_COUNT_LOADEDMODULES;' 'LOADEDMODULES=xl_r/16.1.1:spectrum-mpi/10.4:cuda/11.2;' export 'LOADEDMODULES;' 'MANPATH=/opt/ibm/spectrum_mpi/share/man;' export 'MANPATH;' '__LMOD_REF_COUNT_MODULEPATH=/gpfs/u/software/dcs-rhel8/modulefiles/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/.cuda/11.2:1\;/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4:1\;/gpfs/u/software/dcs-rhel8/modulefiles/.xl_r/16.1.1:1\;/gpfs/u/software/dcs-rhel8/modulefiles:1;' export '__LMOD_REF_COUNT_MODULEPATH;' 'MODULEPATH=/gpfs/u/software/dcs-rhel8/modulefiles/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/.cuda/11.2:/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4:/gpfs/u/software/dcs-rhel8/modulefiles/.xl_r/16.1.1:/gpfs/u/software/dcs-rhel8/modulefiles;' export 'MODULEPATH;' 'MPI_ROOT=/opt/ibm/spectrum_mpi;' export 'MPI_ROOT;' 'OPAL_LIBDIR=/opt/ibm/spectrum_mpi/lib;' export 'OPAL_LIBDIR;' 'PAMI_ENABLE_STRIPING=0;' export 'PAMI_ENABLE_STRIPING;' 'PAMI_IBV_ADAPTER_AFFINITY=1;' export 'PAMI_IBV_ADAPTER_AFFINITY;' 'PAMI_IBV_ENABLE_OOO_AR=1;' export 'PAMI_IBV_ENABLE_OOO_AR;' '__LMOD_REF_COUNT_PATH=/usr/local/cuda-11.2/bin:1\;/opt/ibm/spectrum_mpi/bin:1\;/opt/ibm/xlf/16.1.1/bin:1\;/opt/ibm/xlC/16.1.1/bin:1\;/usr/lpp/mmfs/bin:1\;/usr/local/bin:1\;/usr/bin:1\;/usr/local/sbin:1\;/usr/sbin:1\;/gpfs/u/home/PCPC/PCPCrvrr/.local/bin:1\;/gpfs/u/home/PCPC/PCPCrvrr/bin:1;' export '__LMOD_REF_COUNT_PATH;' 'PATH=/usr/local/cuda-11.2/bin:/opt/ibm/spectrum_mpi/bin:/opt/ibm/xlf/16.1.1/bin:/opt/ibm/xlC/16.1.1/bin:/usr/lpp/mmfs/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/gpfs/u/home/PCPC/PCPCrvrr/.local/bin:/gpfs/u/home/PCPC/PCPCrvrr/bin;' export 'PATH;' '__LMOD_REF_COUNT__LMFILES_=/gpfs/u/software/dcs-rhel8/modulefiles/xl_r/16.1.1.lua:1\;/gpfs/u/software/dcs-rhel8/modulefiles/spectrum-mpi/10.4.lua:1\;/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/cuda/11.2.lua:1;' export '__LMOD_REF_COUNT__LMFILES_;' '_LMFILES_=/gpfs/u/software/dcs-rhel8/modulefiles/xl_r/16.1.1.lua:/gpfs/u/software/dcs-rhel8/modulefiles/spectrum-mpi/10.4.lua:/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/cuda/11.2.lua;' export '_LMFILES_;' '_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09InhsX3IiLFsibXBpIl09InNwZWN0cnVtLW1waSIsfSxtVD17Y3VkYT17WyJmbiJdPSIvZ3Bmcy91L3NvZnR3YXJlL2Rjcy1yaGVsOC9tb2R1bGVmaWxlcy8uc3BlY3RydW0tbXBpLzEwLjQvY3VkYS8xMS4yLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzExLjIiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17c3RhdGU9e1sidGVzdGluZyJdPTEsfSx9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTEuMiIsfSxbInNwZWN0cnVtLW1waSJd;' export '_ModuleTable001_;' '_ModuleTable002_=PXtbImZuIl09Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzL3NwZWN0cnVtLW1waS8xMC40Lmx1YSIsWyJmdWxsTmFtZSJdPSJzcGVjdHJ1bS1tcGkvMTAuNCIsWyJsb2FkT3JkZXIiXT0yLHByb3BUPXtzdGF0ZT17WyJ0ZXN0aW5nIl09MSx9LH0sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3BlY3RydW0tbXBpIix9LHhsX3I9e1siZm4iXT0iL2dwZnMvdS9zb2Z0d2FyZS9kY3MtcmhlbDgvbW9kdWxlZmlsZXMveGxfci8xNi4xLjEubHVhIixbImZ1bGxOYW1lIl09InhsX3IvMTYuMS4xIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNl;' export '_ModuleTable002_;' '_ModuleTable003_=ck5hbWUiXT0ieGxfciIsfSx9LG1wYXRoQT17Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzL2Rjcy1yaGVsOC9tb2R1bGVmaWxlcy8uc3BlY3RydW0tbXBpLzEwLjQvLmN1ZGEvMTEuMiIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzLy5zcGVjdHJ1bS1tcGkvMTAuNCIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzLy54bF9yLzE2LjEuMSIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzIix9LFsic3lzdGVtQmFzZU1QQVRIIl09Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzIix9;' export '_ModuleTable003_;' '_ModuleTable_Sz_=3;' export '_ModuleTable_Sz_;'
+++ CCI_SMPI_SET_TS=2021082400
+++ export CCI_SMPI_SET_TS
+++ CUDA_HOME=/usr/local/cuda-11.2
+++ export CUDA_HOME
+++ CUDA_PATH=/usr/local/cuda-11.2
+++ export CUDA_PATH
+++ __LMOD_REF_COUNT_LD_LIBRARY_PATH='/usr/local/cuda-11.2/lib64:1;/opt/ibm/spectrum_mpi/profilesupport/lib:1;/opt/ibm/spectrum_mpi/lib:1;/opt/mellanox/sharp/lib:1;/opt/mellanox/hcoll/lib:1'
+++ export __LMOD_REF_COUNT_LD_LIBRARY_PATH
+++ LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:/opt/ibm/spectrum_mpi/profilesupport/lib:/opt/ibm/spectrum_mpi/lib:/opt/mellanox/sharp/lib:/opt/mellanox/hcoll/lib
+++ export LD_LIBRARY_PATH
+++ LMOD_FAMILY_MPI=spectrum-mpi
+++ export LMOD_FAMILY_MPI
+++ LMOD_FAMILY_MPI_VERSION=10.4
+++ export LMOD_FAMILY_MPI_VERSION
+++ __LMOD_REF_COUNT_LOADEDMODULES='xl_r/16.1.1:1;spectrum-mpi/10.4:1;cuda/11.2:1'
+++ export __LMOD_REF_COUNT_LOADEDMODULES
+++ LOADEDMODULES=xl_r/16.1.1:spectrum-mpi/10.4:cuda/11.2
+++ export LOADEDMODULES
+++ MANPATH=/opt/ibm/spectrum_mpi/share/man
+++ export MANPATH
+++ __LMOD_REF_COUNT_MODULEPATH='/gpfs/u/software/dcs-rhel8/modulefiles/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/.cuda/11.2:1;/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4:1;/gpfs/u/software/dcs-rhel8/modulefiles/.xl_r/16.1.1:1;/gpfs/u/software/dcs-rhel8/modulefiles:1'
+++ export __LMOD_REF_COUNT_MODULEPATH
+++ MODULEPATH=/gpfs/u/software/dcs-rhel8/modulefiles/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/.cuda/11.2:/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4:/gpfs/u/software/dcs-rhel8/modulefiles/.xl_r/16.1.1:/gpfs/u/software/dcs-rhel8/modulefiles
+++ export MODULEPATH
+++ MPI_ROOT=/opt/ibm/spectrum_mpi
+++ export MPI_ROOT
+++ OPAL_LIBDIR=/opt/ibm/spectrum_mpi/lib
+++ export OPAL_LIBDIR
+++ PAMI_ENABLE_STRIPING=0
+++ export PAMI_ENABLE_STRIPING
+++ PAMI_IBV_ADAPTER_AFFINITY=1
+++ export PAMI_IBV_ADAPTER_AFFINITY
+++ PAMI_IBV_ENABLE_OOO_AR=1
+++ export PAMI_IBV_ENABLE_OOO_AR
+++ __LMOD_REF_COUNT_PATH='/usr/local/cuda-11.2/bin:1;/opt/ibm/spectrum_mpi/bin:1;/opt/ibm/xlf/16.1.1/bin:1;/opt/ibm/xlC/16.1.1/bin:1;/usr/lpp/mmfs/bin:1;/usr/local/bin:1;/usr/bin:1;/usr/local/sbin:1;/usr/sbin:1;/gpfs/u/home/PCPC/PCPCrvrr/.local/bin:1;/gpfs/u/home/PCPC/PCPCrvrr/bin:1'
+++ export __LMOD_REF_COUNT_PATH
+++ PATH=/usr/local/cuda-11.2/bin:/opt/ibm/spectrum_mpi/bin:/opt/ibm/xlf/16.1.1/bin:/opt/ibm/xlC/16.1.1/bin:/usr/lpp/mmfs/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/gpfs/u/home/PCPC/PCPCrvrr/.local/bin:/gpfs/u/home/PCPC/PCPCrvrr/bin
+++ export PATH
+++ __LMOD_REF_COUNT__LMFILES_='/gpfs/u/software/dcs-rhel8/modulefiles/xl_r/16.1.1.lua:1;/gpfs/u/software/dcs-rhel8/modulefiles/spectrum-mpi/10.4.lua:1;/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/cuda/11.2.lua:1'
+++ export __LMOD_REF_COUNT__LMFILES_
+++ _LMFILES_=/gpfs/u/software/dcs-rhel8/modulefiles/xl_r/16.1.1.lua:/gpfs/u/software/dcs-rhel8/modulefiles/spectrum-mpi/10.4.lua:/gpfs/u/software/dcs-rhel8/modulefiles/.spectrum-mpi/10.4/cuda/11.2.lua
+++ export _LMFILES_
+++ _ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbImNvbXBpbGVyIl09InhsX3IiLFsibXBpIl09InNwZWN0cnVtLW1waSIsfSxtVD17Y3VkYT17WyJmbiJdPSIvZ3Bmcy91L3NvZnR3YXJlL2Rjcy1yaGVsOC9tb2R1bGVmaWxlcy8uc3BlY3RydW0tbXBpLzEwLjQvY3VkYS8xMS4yLmx1YSIsWyJmdWxsTmFtZSJdPSJjdWRhLzExLjIiLFsibG9hZE9yZGVyIl09Myxwcm9wVD17c3RhdGU9e1sidGVzdGluZyJdPTEsfSx9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImN1ZGEvMTEuMiIsfSxbInNwZWN0cnVtLW1waSJd
+++ export _ModuleTable001_
+++ _ModuleTable002_=PXtbImZuIl09Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzL3NwZWN0cnVtLW1waS8xMC40Lmx1YSIsWyJmdWxsTmFtZSJdPSJzcGVjdHJ1bS1tcGkvMTAuNCIsWyJsb2FkT3JkZXIiXT0yLHByb3BUPXtzdGF0ZT17WyJ0ZXN0aW5nIl09MSx9LH0sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNlck5hbWUiXT0ic3BlY3RydW0tbXBpIix9LHhsX3I9e1siZm4iXT0iL2dwZnMvdS9zb2Z0d2FyZS9kY3MtcmhlbDgvbW9kdWxlZmlsZXMveGxfci8xNi4xLjEubHVhIixbImZ1bGxOYW1lIl09InhsX3IvMTYuMS4xIixbImxvYWRPcmRlciJdPTEscHJvcFQ9e30sWyJzdGFja0RlcHRoIl09MCxbInN0YXR1cyJdPSJhY3RpdmUiLFsidXNl
+++ export _ModuleTable002_
+++ _ModuleTable003_=ck5hbWUiXT0ieGxfciIsfSx9LG1wYXRoQT17Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzL2Rjcy1yaGVsOC9tb2R1bGVmaWxlcy8uc3BlY3RydW0tbXBpLzEwLjQvLmN1ZGEvMTEuMiIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzLy5zcGVjdHJ1bS1tcGkvMTAuNCIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzLy54bF9yLzE2LjEuMSIsIi9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzIix9LFsic3lzdGVtQmFzZU1QQVRIIl09Ii9ncGZzL3Uvc29mdHdhcmUvZGNzLXJoZWw4L21vZHVsZWZpbGVzIix9
+++ export _ModuleTable003_
+++ _ModuleTable_Sz_=3
+++ export _ModuleTable_Sz_
+++ : -s sh
++ eval
++ taskset -c 0-159:4 mpirun -N 4 /gpfs/u/home/PCPC/PCPCrvrr/scratch/run.out
+
+
+------Running Parallel------
+
+MPI Rank 0: READING Matrix data/dense/64.mtx	64 by 64 in Parallel
+READ Matrix 64 by 64 in 2968538 cycles (0.00579793 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	64
+DONE in 53330382 cycles (0.104161 secs)
+WROTE TO FILE in 1829890 cycles (0.003574 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	64
+DONE in 21835 cycles (4.26465e-05 secs)
+WROTE TO FILE in 1296781 cycles (0.00253278 secs)
+
+MPI Rank 0: READING Matrix data/sparse/64.mtx	64 by 64 in Parallel
+READ Matrix 64 by 64 in 1872533 cycles (0.00365729 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	64
+DONE in 60343 cycles (0.000117857 secs)
+WROTE TO FILE in 1348957 cycles (0.00263468 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	64
+DONE in 19699 cycles (3.84746e-05 secs)
+WROTE TO FILE in 1373466 cycles (0.00268255 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/64.mtx	64 by 64 in Parallel
+READ Matrix 64 by 64 in 1585322 cycles (0.00309633 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	64
+DONE in 56368 cycles (0.000110094 secs)
+WROTE TO FILE in 1285589 cycles (0.00251092 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	64
+DONE in 20557 cycles (4.01504e-05 secs)
+WROTE TO FILE in 1443889 cycles (0.0028201 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/64.mtx	64 by 64 in Parallel
+READ Matrix 64 by 64 in 1655576 cycles (0.00323355 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	64
+DONE in 38308 cycles (7.48203e-05 secs)
+WROTE TO FILE in 1247189 cycles (0.00243592 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	64
+DONE in 19815 cycles (3.87012e-05 secs)
+WROTE TO FILE in 1264620 cycles (0.00246996 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/128.mtx	128 by 128 in Parallel
+READ Matrix 128 by 128 in 1676420 cycles (0.00327426 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	128
+DONE in 61065 cycles (0.000119268 secs)
+WROTE TO FILE in 1661836 cycles (0.00324577 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	128
+DONE in 64430 cycles (0.00012584 secs)
+WROTE TO FILE in 1617773 cycles (0.00315971 secs)
+
+MPI Rank 0: READING Matrix data/sparse/128.mtx	128 by 128 in Parallel
+READ Matrix 128 by 128 in 1565104 cycles (0.00305684 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	128
+DONE in 53420 cycles (0.000104336 secs)
+WROTE TO FILE in 1670909 cycles (0.00326349 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	128
+DONE in 61876 cycles (0.000120852 secs)
+WROTE TO FILE in 1709396 cycles (0.00333866 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/128.mtx	128 by 128 in Parallel
+READ Matrix 128 by 128 in 1615405 cycles (0.00315509 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	128
+DONE in 82484 cycles (0.000161102 secs)
+WROTE TO FILE in 1636755 cycles (0.00319679 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	128
+DONE in 61731 cycles (0.000120568 secs)
+WROTE TO FILE in 1654875 cycles (0.00323218 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/128.mtx	128 by 128 in Parallel
+READ Matrix 128 by 128 in 1592155 cycles (0.00310968 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	128
+DONE in 59209 cycles (0.000115643 secs)
+WROTE TO FILE in 1659547 cycles (0.0032413 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	128
+DONE in 61938 cycles (0.000120973 secs)
+WROTE TO FILE in 1650698 cycles (0.00322402 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/256.mtx	256 by 256 in Parallel
+READ Matrix 256 by 256 in 1619561 cycles (0.00316321 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	256
+DONE in 115130 cycles (0.000224863 secs)
+WROTE TO FILE in 2838785 cycles (0.0055445 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	256
+DONE in 215377 cycles (0.000420658 secs)
+WROTE TO FILE in 2811208 cycles (0.00549064 secs)
+
+MPI Rank 0: READING Matrix data/sparse/256.mtx	256 by 256 in Parallel
+READ Matrix 256 by 256 in 1955126 cycles (0.00381861 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	256
+DONE in 634837 cycles (0.00123992 secs)
+WROTE TO FILE in 3175593 cycles (0.00620233 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	256
+DONE in 217699 cycles (0.000425193 secs)
+WROTE TO FILE in 2921646 cycles (0.00570634 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/256.mtx	256 by 256 in Parallel
+READ Matrix 256 by 256 in 1777044 cycles (0.00347079 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	256
+DONE in 2464884 cycles (0.00481423 secs)
+WROTE TO FILE in 3027527 cycles (0.00591314 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	256
+DONE in 214834 cycles (0.000419598 secs)
+WROTE TO FILE in 2929964 cycles (0.00572259 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/256.mtx	256 by 256 in Parallel
+READ Matrix 256 by 256 in 1818469 cycles (0.0035517 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	256
+DONE in 74745 cycles (0.000145986 secs)
+WROTE TO FILE in 2904435 cycles (0.00567272 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	256
+DONE in 215443 cycles (0.000420787 secs)
+WROTE TO FILE in 2938815 cycles (0.00573987 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/512.mtx	512 by 512 in Parallel
+READ Matrix 512 by 512 in 3052415 cycles (0.00596175 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	512
+DONE in 174430 cycles (0.000340684 secs)
+WROTE TO FILE in 7138656 cycles (0.0139427 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	512
+DONE in 806687 cycles (0.00157556 secs)
+WROTE TO FILE in 6685737 cycles (0.0130581 secs)
+
+MPI Rank 0: READING Matrix data/sparse/512.mtx	512 by 512 in Parallel
+READ Matrix 512 by 512 in 2243748 cycles (0.00438232 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	512
+DONE in 145049 cycles (0.000283299 secs)
+WROTE TO FILE in 6850414 cycles (0.0133797 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	512
+DONE in 807302 cycles (0.00157676 secs)
+WROTE TO FILE in 6771439 cycles (0.0132255 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/512.mtx	512 by 512 in Parallel
+READ Matrix 512 by 512 in 2080567 cycles (0.00406361 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	512
+DONE in 167529 cycles (0.000327205 secs)
+WROTE TO FILE in 6741345 cycles (0.0131667 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	512
+DONE in 808491 cycles (0.00157908 secs)
+WROTE TO FILE in 6713213 cycles (0.0131117 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/512.mtx	512 by 512 in Parallel
+READ Matrix 512 by 512 in 2216408 cycles (0.00432892 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	512
+DONE in 147776 cycles (0.000288625 secs)
+WROTE TO FILE in 6740393 cycles (0.0131648 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	512
+DONE in 803943 cycles (0.0015702 secs)
+WROTE TO FILE in 6693902 cycles (0.013074 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/1024.mtx	1024 by 1024 in Parallel
+READ Matrix 1024 by 1024 in 4333364 cycles (0.0084636 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	1024
+DONE in 276836 cycles (0.000540695 secs)
+WROTE TO FILE in 21451664 cycles (0.0418978 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	1024
+DONE in 3243221 cycles (0.00633442 secs)
+WROTE TO FILE in 21439513 cycles (0.041874 secs)
+
+MPI Rank 0: READING Matrix data/sparse/1024.mtx	1024 by 1024 in Parallel
+READ Matrix 1024 by 1024 in 4190915 cycles (0.00818538 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	1024
+DONE in 239251 cycles (0.000467287 secs)
+WROTE TO FILE in 21600840 cycles (0.0421891 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	1024
+DONE in 2962727 cycles (0.00578658 secs)
+WROTE TO FILE in 21506058 cycles (0.042004 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/1024.mtx	1024 by 1024 in Parallel
+READ Matrix 1024 by 1024 in 4284811 cycles (0.00836877 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	1024
+DONE in 204752 cycles (0.000399906 secs)
+WROTE TO FILE in 21460961 cycles (0.0419159 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	1024
+DONE in 42733439 cycles (0.0834637 secs)
+WROTE TO FILE in 21635228 cycles (0.0422563 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/1024.mtx	1024 by 1024 in Parallel
+READ Matrix 1024 by 1024 in 4625143 cycles (0.00903348 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	1024
+DONE in 223843 cycles (0.000437193 secs)
+WROTE TO FILE in 27609036 cycles (0.0539239 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	1024
+DONE in 3156366 cycles (0.00616478 secs)
+WROTE TO FILE in 21883197 cycles (0.0427406 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/2048.mtx	2048 by 2048 in Parallel
+READ Matrix 2048 by 2048 in 6032329 cycles (0.0117819 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	2048
+DONE in 480726 cycles (0.000938918 secs)
+WROTE TO FILE in 77343672 cycles (0.151062 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	2048
+DONE in 10060968 cycles (0.0196503 secs)
+WROTE TO FILE in 76191086 cycles (0.148811 secs)
+
+MPI Rank 0: READING Matrix data/sparse/2048.mtx	2048 by 2048 in Parallel
+READ Matrix 2048 by 2048 in 6188934 cycles (0.0120878 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	2048
+DONE in 1826739 cycles (0.00356785 secs)
+WROTE TO FILE in 76273808 cycles (0.148972 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	2048
+DONE in 9780876 cycles (0.0191033 secs)
+WROTE TO FILE in 76332887 cycles (0.149088 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/2048.mtx	2048 by 2048 in Parallel
+READ Matrix 2048 by 2048 in 5214844 cycles (0.0101852 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	2048
+DONE in 1086779 cycles (0.00212262 secs)
+WROTE TO FILE in 76174875 cycles (0.148779 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	2048
+DONE in 9932794 cycles (0.0194 secs)
+WROTE TO FILE in 75994646 cycles (0.148427 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/2048.mtx	2048 by 2048 in Parallel
+READ Matrix 2048 by 2048 in 5878550 cycles (0.0114815 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	2048
+DONE in 1896245 cycles (0.0037036 secs)
+WROTE TO FILE in 76174378 cycles (0.148778 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	2048
+DONE in 19891916 cycles (0.0388514 secs)
+WROTE TO FILE in 79906688 cycles (0.156068 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/4096.mtx	4096 by 4096 in Parallel
+READ Matrix 4096 by 4096 in 8628368 cycles (0.0168523 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	4096
+DONE in 2265912 cycles (0.00442561 secs)
+WROTE TO FILE in 298465282 cycles (0.58294 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	4096
+DONE in 38631355 cycles (0.0754519 secs)
+WROTE TO FILE in 293464037 cycles (0.573172 secs)
+
+MPI Rank 0: READING Matrix data/sparse/4096.mtx	4096 by 4096 in Parallel
+READ Matrix 4096 by 4096 in 8369847 cycles (0.0163474 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	4096
+DONE in 1995220 cycles (0.00389691 secs)
+WROTE TO FILE in 298674830 cycles (0.583349 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	4096
+DONE in 39577812 cycles (0.0773004 secs)
+WROTE TO FILE in 293553529 cycles (0.573347 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/4096.mtx	4096 by 4096 in Parallel
+READ Matrix 4096 by 4096 in 9186953 cycles (0.0179433 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	4096
+DONE in 2050231 cycles (0.00400436 secs)
+WROTE TO FILE in 299244169 cycles (0.584461 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	4096
+DONE in 39614415 cycles (0.0773719 secs)
+WROTE TO FILE in 293360561 cycles (0.57297 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/4096.mtx	4096 by 4096 in Parallel
+READ Matrix 4096 by 4096 in 10764572 cycles (0.0210246 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	4096
+DONE in 3164334 cycles (0.00618034 secs)
+WROTE TO FILE in 352848384 cycles (0.689157 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	4096
+DONE in 38974035 cycles (0.0761212 secs)
+WROTE TO FILE in 296738643 cycles (0.579568 secs)
+
+
+MPI Rank 0: READING Matrix data/dense/8192.mtx	8192 by 8192 in Parallel
+READ Matrix 8192 by 8192 in 20608580 cycles (0.0402511 secs)
+RUNNING Parallel Modified Gram-Schmidt	dense	8192
+DONE in 8639746 cycles (0.0168745 secs)
+WROTE TO FILE in 1169304955 cycles (2.2838 secs)
+RUNNING Parallel Classic Gram-Schmidt	dense	8192
+DONE in 156485506 cycles (0.305636 secs)
+WROTE TO FILE in 1171779945 cycles (2.28863 secs)
+
+MPI Rank 0: READING Matrix data/sparse/8192.mtx	8192 by 8192 in Parallel
+READ Matrix 8192 by 8192 in 18286991 cycles (0.0357168 secs)
+RUNNING Parallel Modified Gram-Schmidt	sparse	8192
+DONE in 6047988 cycles (0.0118125 secs)
+WROTE TO FILE in 1176723383 cycles (2.29829 secs)
+RUNNING Parallel Classic Gram-Schmidt	sparse	8192
+DONE in 158540927 cycles (0.30965 secs)
+WROTE TO FILE in 1185950173 cycles (2.31631 secs)
+
+MPI Rank 0: READING Matrix data/well-conditioned/8192.mtx	8192 by 8192 in Parallel
+READ Matrix 8192 by 8192 in 18250405 cycles (0.0356453 secs)
+RUNNING Parallel Modified Gram-Schmidt	well-conditioned	8192
+DONE in 4166518 cycles (0.00813773 secs)
+WROTE TO FILE in 1179321428 cycles (2.30336 secs)
+RUNNING Parallel Classic Gram-Schmidt	well-conditioned	8192
+DONE in 155050972 cycles (0.302834 secs)
+WROTE TO FILE in 1170134952 cycles (2.28542 secs)
+
+MPI Rank 0: READING Matrix data/ill-conditioned/8192.mtx	8192 by 8192 in Parallel
+READ Matrix 8192 by 8192 in 20107419 cycles (0.0392723 secs)
+RUNNING Parallel Modified Gram-Schmidt	ill-conditioned	8192
+DONE in 3808710 cycles (0.00743889 secs)
+WROTE TO FILE in 1174477867 cycles (2.2939 secs)
+RUNNING Parallel Classic Gram-Schmidt	ill-conditioned	8192
+DONE in 185067544 cycles (0.36146 secs)
+WROTE TO FILE in 1171551336 cycles (2.28819 secs)
+

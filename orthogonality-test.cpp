@@ -2,6 +2,8 @@
 #include <cmath>
 #include <stddef.h>
 #include <string.h>
+#include <fstream>
+#include <iostream>
 
 double **allocateHostMatrix(size_t n) {
     double **ret = (double **)malloc(sizeof(double *) * n);
@@ -15,10 +17,12 @@ double **allocateHostMatrix(size_t n) {
 //       where E = (Q^T *  Q) - I
 double **orthoError(size_t m, size_t n, double **Q) {
     double **E = allocateHostMatrix(m);
-    double   tmp;
+    double tmp;
+
     for (size_t i = 0; i < m; i++) {
         for (size_t j = i; j < m; j++) {
             tmp = serial_dot(Q[i], Q[j], n);
+            // printf("%f", tmp);
             E[i][j] = tmp;
             // Subtract the identity
             if (i == j) {
@@ -36,6 +40,13 @@ double **orthoError(size_t m, size_t n, double **Q) {
 //  concats matrix rows then finds the
 //  2-norm of the vector in R^(m*n)
 double frobeniusNorm(size_t m, size_t n, double **E) {
+    // double total = 0.0;
+    // for (size_t i = 0; i < m; i++) {
+    //     for (size_t j = 0; j < n; j++) {
+    //         total += E[i][j] * E[i][j];
+    //     }
+    // }
+    // return sqrt(total);
     double total = 0.0;
     for (size_t i = 0; i < m; i++) {
         for (size_t j = 0; j < n; j++) {

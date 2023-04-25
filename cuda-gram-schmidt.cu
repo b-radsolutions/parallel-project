@@ -5,10 +5,10 @@
 #include "matrix-operations.hpp"
 
 #include "math.h"
-#include <cstdlib>
-#include <stdio.h>
-#include <iostream>
 #include "mpi-helper.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <stdio.h>
 
 #define calc1dIndex blockIdx.x *blockDim.x + threadIdx.x
 
@@ -106,6 +106,7 @@ __global__ void many_vector_subtractions(double *base, double **vectors, double 
         int vi = i % n;
         vectors[block][vi] -= base[vi] * scalars[block];
     }
+    __syncthreads();
 }
 
 /**
@@ -139,6 +140,7 @@ __global__ void many_vector_dot_product(double *base, double **vectors,
         }
         result[index] = res;
     }
+    __syncthreads();
 }
 
 // ----------------------------------------
@@ -149,20 +151,22 @@ double *magnitude;
 double *host_magnitude;
 
 void cudaSetup(size_t myrank) {
-    // Set up memory to hold the result of dot product
-    cudaMalloc(&magnitude, sizeof(double));
-    host_magnitude = (double *)malloc(sizeof(double));
-
     int cE; // Cuda Error
     int cudaDeviceCount;
     if ((cE = cudaGetDeviceCount(&cudaDeviceCount)) != cudaSuccess) {
-        std::cout << " Unable to determine cuda device count, error is "<< cE <<", count is "<< cudaDeviceCount <<"\n";
+        std::cout << " Unable to determine cuda device count, error is " << cE
+                  << ", count is " << cudaDeviceCount << "\n";
         exit(-1);
     }
     if ((cE = cudaSetDevice(myrank % cudaDeviceCount)) != cudaSuccess) {
-        std::cout << " Unable to have rank "<< myrank <<" set to cuda device "<< (myrank % cudaDeviceCount) <<", error is "<< cE <<" \n";
+        std::cout << " Unable to have rank " << myrank << " set to cuda device "
+                  << (myrank % cudaDeviceCount) << ", error is " << cE << " \n";
         exit(-1);
     }
+
+    // Set up memory to hold the result of dot product
+    cudaMalloc(&magnitude, sizeof(double));
+    host_magnitude = (double *)malloc(sizeof(double));
 }
 
 void cudaCleanup() { cudaFree(magnitude); }
@@ -350,8 +354,8 @@ void performModifiedGramSchmidtReduction(double **A, size_t m, size_t n,
     coeffs = (double *)malloc(coefficient_size);
     // many_vector_projection_subtractions<<<1, n>>>(base, remainder, remainder_count,
     // n); Do all of the dot products
-    many_vector_dot_product<<<1, n, coefficient_size>>>(base, remainder, remainder_count,
-                                                        n, dots);
+    many_vector_dot_product<<<1, n, coefficient_size * n>>>(base, remainder,
+                                                            remainder_count, n, dots);
     // Communicate with the other MPI ranks to discover the complete dot product
     cudaMemcpy(host_dots, dots, coefficient_size, cudaMemcpyDeviceToHost);
     my_MPIReduce(host_dots, remainder_count, coeffs);

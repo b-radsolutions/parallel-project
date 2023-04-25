@@ -17,10 +17,10 @@ $(ODIR):
 	mkdir -p $(ODIR)
 
 $(ODIR)/%.o: %.cpp $(DEPS) $(ODIR)
-	$(CC) -g -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 cuda-gram-schmidt.o: cuda-gram-schmidt.cu
-	nvcc -g -G cuda-gram-schmidt.cu -c -o cuda-gram-schmidt.o
+	nvcc cuda-gram-schmidt.cu -c -o cuda-gram-schmidt.o
 
 .PHONY: test
 test: test.out
@@ -40,6 +40,4 @@ clean:
 
 ortho:
 	mkdir -p out
-	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho
-	./ortho mat_filenames.txt
-	
+	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho.out

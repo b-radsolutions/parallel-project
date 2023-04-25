@@ -2,6 +2,12 @@
 generate.out: generate-matrix.cpp matrix-writer.cpp
 	g++ -O3 matrix-writer.cpp generate-matrix.cpp -o generate.out
 
+res.out: resurrect.cpp
+	g++ -O3 resurrect.cpp -o res.out
+
+res: res.out
+	./res.out ../../1node/out/ClassicParallel64by64densepart 4 ./tmp
+
 .PHONY: generate-all
 generate-all: generate.out
 	mkdir -p ../data
@@ -29,7 +35,7 @@ generate-all: generate.out
 	./generate.out ../data/sparse/1024.mtx 1024 2
 	./generate.out ../data/sparse/2048.mtx 2048 2
 	./generate.out ../data/sparse/4096.mtx 4096 2
-	./generate.out ../data/sparse/4096.mtx 8192 2
+	./generate.out ../data/sparse/8192.mtx 8192 2
 
 	mkdir -p ../data/well-conditioned
 	./generate.out ../data/well-conditioned/4.mtx 4 3
