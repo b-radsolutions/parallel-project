@@ -19,7 +19,7 @@ void calculateError(std::string filename, std::string fold) {
     size_t        m;
     file.read((char *)(&m), sizeof(size_t));
     printf("file: %s  \n", filename.c_str());
-    double **Q, **E;
+    double **Q;
     double   frob_norm, one_norm, inf_norm;
     char     bad = '.';
     if ((filename.c_str())[0] == bad && (filename.c_str())[1] != '/') {
@@ -27,8 +27,7 @@ void calculateError(std::string filename, std::string fold) {
         return;
     }
     Q = read_matrix(str1, m);
-    E = orthoError(m, m, Q);
-    frob_norm = frobeniusNorm(m, m, E);
+    frob_norm = orthoError(m, m, Q);
     one_norm = oneNorm(m, m, Q);
     inf_norm = infNorm(m, m, Q);
     printf("%lu, %.16f, %.16f, %.16f, %s\n", m, frob_norm, one_norm, inf_norm,
