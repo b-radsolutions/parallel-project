@@ -1,4 +1,5 @@
 
+#include "../matrix-operations.hpp"
 #include <cmath>
 #include <stddef.h>
 #include <string.h>
@@ -18,26 +19,18 @@ double **allocateHostMatrix(size_t n) {
     return ret;
 }
 
-// Takes a matrix Q
-// Returns a matrix E
-//       where E = (Q^T *  Q) - I
-double **orthoError(size_t m, size_t n, double **Q) {
-    double **E = allocateHostMatrix(m);
-    double   tmp;
+double orthoError(size_t m, size_t n, double **Q) {
+    double   tmp, total = 0.;
+    double **cudaQ = matrixHostToDevice(Q, m, n);
     for (size_t i = 0; i < m; i++) {
         for (size_t j = i; j < m; j++) {
-            tmp = serial_dot(Q[i], Q[j], n);
-            E[i][j] = tmp;
-            // Subtract the identity
-            if (i == j) {
-                E[i][j] -= 1;
-            }
-        }
-        for (size_t j = 0; j < i; j++) {
-            E[i][j] = E[j][i];
+            // tmp = serial_dot(Q[i], Q[j], n);
+            tmp = dot(Q[i], Q[j], n);
+            total += 2 * tmp * tmp;
         }
     }
-    return E;
+    cleanupMatrix(cudaQ, n);
+    return sqrt(total);
 }
 
 // Test for orthogonality Frobenius norm
@@ -60,13 +53,15 @@ double frobeniusNorm(size_t m, size_t n, double **E) {
 // takes the infinity norm of the errors of each column in Q
 // and then takes the 1-norm of each vector inf-norm
 double infNorm(size_t m, size_t n, double **E) {
-    double error = 0.0;
-    double tmp;
+    double   error = 0.0;
+    double   tmp;
+    double **cudaQ = matrixHostToDevice(E, m, n);
     for (size_t i = 0; i < m; i++) {
         double max_dot = 0.0;
         for (size_t j = 0; j < n; j++) {
             if (i != j) {
-                tmp = serial_dot(E[j], E[i], n);
+                tmp = dot(cudaQ[j], cudaQ[i], n);
+                // tmp = serial_dot(E[j], E[i], n);
                 if (tmp > max_dot) {
                     max_dot = tmp;
                 }
@@ -74,6 +69,7 @@ double infNorm(size_t m, size_t n, double **E) {
         }
         error += max_dot;
     }
+    cleanupMatrix(cudaQ, n);
     return error;
 }
 
@@ -82,18 +78,21 @@ double infNorm(size_t m, size_t n, double **E) {
 // respect to every other columns and finds the 1-norm of
 // those sums.
 double oneNorm(size_t m, size_t n, double **E) {
-    double error = 0.0;
-    double tmp;
+    double   error = 0.0;
+    double   tmp;
+    double **cudaQ = matrixHostToDevice(E, m, n);
     for (size_t i = 0; i < m; i++) {
         double total = 0.0;
         for (size_t j = 0; j < n; j++) {
             if (i != j) {
-                tmp = serial_dot(E[j], E[i], n);
+                tmp = dot(cudaQ[j], cudaQ[i], n);
+                // tmp = serial_dot(E[j], E[i], n);
                 total += tmp * tmp;
             }
         }
         error += sqrt(total);
     }
+    cleanupMatrix(cudaQ, n);
     return error;
 }
 

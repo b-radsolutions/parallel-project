@@ -1,5 +1,6 @@
+#include "matrix-operations.hpp"
 #include "orthogonality-test.hpp"
-#include "read_matrix_serial.hpp"
+#include "tools/read_matrix_serial.hpp"
 #include <assert.h>
 #include <cstring>
 #include <dirent.h>
@@ -17,20 +18,23 @@ void calculateError(std::string filename, std::string fold) {
     std::ifstream file(str1, std::ios::in | std::ios::binary);
     size_t        m;
     file.read((char *)(&m), sizeof(size_t));
-
+    printf("file: %s  \n", filename.c_str());
     double **Q, **E;
     double   frob_norm, one_norm, inf_norm;
-
+    char     bad = '.';
+    if ((filename.c_str())[0] == bad && (filename.c_str())[1] != '/') {
+        printf("badfile: %s  \n", filename.c_str());
+        return;
+    }
     Q = read_matrix(str1, m);
     E = orthoError(m, m, Q);
     frob_norm = frobeniusNorm(m, m, E);
-    one_norm = oneNorm(m, m, E);
-    inf_norm = infNorm(m, m, E);
-    printf("%lu %lf %lf %lf %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
+    one_norm = oneNorm(m, m, Q);
+    inf_norm = infNorm(m, m, Q);
+    printf("%lu, %.16f, %.16f, %.16f, %s\n", m, frob_norm, one_norm, inf_norm,
+           filename.c_str());
 }
 
-// either accepts a directory if flag -r is provided before the name of the directory
-// or accepts a single file
 int main(int argc, char *argv[]) {
     printf("%s\n", argv[1]);
     if (strcmp(argv[1], "-r") == 0) {
