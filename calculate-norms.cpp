@@ -20,19 +20,20 @@ void calculateError(std::string filename, std::string fold)
     std::ifstream file(str1, std::ios::in | std::ios::binary);
     size_t m;
     file.read((char *)(&m), sizeof(size_t));
-    printf("%s \n", filename.c_str());
+    printf("file: %s  \n", filename.c_str());
     double **Q, **E;
     double frob_norm, one_norm, inf_norm;
     char bad = '.';
-    if((filename.c_str())[0] == bad) {
+    if((filename.c_str())[0] == bad && (filename.c_str())[1] != '/') {
+        printf("badfile: %s  \n", filename.c_str());
         return;
     }
     Q = read_matrix(str1, m);
     E = orthoError(m, m, Q);
     frob_norm = frobeniusNorm(m, m, E);
-    one_norm = oneNorm(m, m, E);
-    inf_norm = infNorm(m, m, E);
-    printf("%lu, %lf, %lf, %lf, %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
+    one_norm = oneNorm(m, m, Q);
+    inf_norm = infNorm(m, m, Q);
+    printf("%lu, %.16f, %.16f, %.16f, %s\n", m, frob_norm, one_norm, inf_norm, filename.c_str());
 }
 
 int main(int argc, char* argv[]) {
