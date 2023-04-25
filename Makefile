@@ -40,6 +40,5 @@ clean:
 
 ortho:
 	mkdir -p out
-	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho
-	./ortho
+	g++ calculate-norms.cpp ./tools/read_matrix_serial.cpp orthogonality-test.cpp serial-linalg.cpp -o ortho.out
 	
