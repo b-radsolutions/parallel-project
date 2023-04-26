@@ -1,6 +1,6 @@
-#include "matrix-operations.hpp"
+#include "../matrix-operations.hpp"
 #include "orthogonality-test.hpp"
-#include "tools/read_matrix_serial.hpp"
+#include "read_matrix_serial.hpp"
 #include <assert.h>
 #include <cstring>
 #include <dirent.h>
